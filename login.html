@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SushiKami Login</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: var(--body-color);
+      font-family: var(--body-font);
+      margin: 0;
+    }
+
+    /* position container so the theme button can sit absolutely relative to viewport */
+    .page-wrapper {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* theme button small override */
+    #theme-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 50;
+    }
+
+    .login-box {
+      background: var(--container-color);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-box h2 {
+      color: var(--title-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .login-box input, 
+    .login-box select {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      font-family: var(--body-font);
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      background: var(--first-color);
+      color: #fff;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .login-box button:hover {
+      opacity: 0.95;
+    }
+
+    .login-box p {
+      margin-top: 1rem;
+      color: var(--text-color);
+    }
+
+    .login-box a {
+      color: var(--first-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* small helper to hide forms */
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- theme toggle (moved out of the style block) -->
+    <i class='bx bx-moon change-theme' id="theme-button" aria-hidden="true"></i>
+
+    <div class="login-box">
+      <h2>Welcome to SushiKami</h2>
+
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="#" id="signupLink">Sign up</a></p>
+      </form>
+
+      <form id="signupForm" class="hidden">
+        <input type="text" id="newUsername" placeholder="Create Username" required>
+        <input type="password" id="newPassword" placeholder="Create Password" required>
+        <label for="role">Role:</label>
+        <select id="role">
+          <option value="customer">Customer</option>
+          <option value="staff">Staff</option>
+          <option value="admin">Admin</option>
+        </select>
+
+        <button type="submit">Sign Up</button>
+        <p>Already have an account? <a href="#" id="loginLink">Login</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const signupLink = document.getElementById('signupLink');
+    const loginLink = document.getElementById('loginLink');
+
+    signupLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.classList.add('hidden');
+      signupForm.classList.remove('hidden');
+    });
+
+    loginLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      signupForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+    });
+
+    // Signup
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('newUsername').value.trim();
+      const password = document.getElementById('newPassword').value.trim();
+      const role = document.getElementById('role').value;
+
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      if (users.some(u => u.username === username)) {
+        alert('Username already exists.');
+        return;
+      }
+
+      users.push({ username, password, role });
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Account created! You can now log in.');
+      signupForm.reset();
+      signupForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+    });
+
+    // Login
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (!user) {
+        alert('Invalid username or password.');
+        return;
+      }
+
+      if (user.role !== 'customer') {
+        alert('Only customers can access this page.');
+        return;
+      }
+
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      alert(`Welcome, ${user.username}! Redirecting to SushiKami...`);
+      window.location.href = 'index.html';
+    });
+
+    // Auto-redirect if already logged in as customer
+    const loggedIn = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (loggedIn && loggedIn.role === 'customer') {
+      window.location.href = 'index.html';
+    }
+  </script>
+
+  <script>
+    /* ===== THEME TOGGLE (compatible with your site) ===== */
+    const themeButton = document.getElementById('theme-button');
+    const darkTheme = 'dark-theme';
+    const sunClass = 'bx-sun';
+    const moonClass = 'bx-moon';
+
+    // Previously selected theme (if user selected)
+    const selectedTheme = localStorage.getItem('selected-theme');
+    const selectedIcon = localStorage.getItem('selected-icon');
+
+    const getCurrentTheme = () =>
+      document.body.classList.contains(darkTheme) ? 'dark' : 'light';
+    const getCurrentIcon = () =>
+      themeButton.classList.contains(sunClass) ? sunClass : moonClass;
+
+    if (selectedTheme) {
+      document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](darkTheme);
+    }
+    if (selectedIcon === sunClass) {
+      themeButton.classList.add(sunClass);
+      themeButton.classList.remove(moonClass);
+    } else {
+      themeButton.classList.add(moonClass);
+      themeButton.classList.remove(sunClass);
+    }
+
+    themeButton.addEventListener('click', () => {
+      document.body.classList.toggle(darkTheme);
+
+      // toggle icon class
+      if (themeButton.classList.contains(sunClass)) {
+        themeButton.classList.remove(sunClass);
+        themeButton.classList.add(moonClass);
+      } else {
+        themeButton.classList.remove(moonClass);
+        themeButton.classList.add(sunClass);
+      }
+
+      localStorage.setItem('selected-theme', getCurrentTheme());
+      localStorage.setItem('selected-icon', getCurrentIcon());
+    });
+  </script>
+
+  <!-- boxicons CDN is required for the moon/sun icon (if not included globally) -->
+  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</body>
+</html>
