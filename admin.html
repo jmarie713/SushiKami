@@ -1,0 +1,3825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>SushiKami | Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #C62828;
+            --dark-red: #8e0000;
+            --light-red: #ff5f52;
+            --black: #1A1A1A;
+            --cream: #F5F5DC;
+            --gold: #d4af37;
+            --dark-gold: #b8941f;
+            --light-gold: #f4e4a6;
+            --dark-gray: #2a2a2a;
+            --panel-bg: rgba(35, 35, 35, 0.92);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--black);
+            color: var(--cream);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.35;
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(15, 15, 15, 0.8) 0%, rgba(26, 26, 26, 0.85) 100%);
+            z-index: -1;
+        }
+
+        .header {
+            background: linear-gradient(145deg, rgba(40, 40, 40, 0.95), rgba(30, 30, 30, 0.95));
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--primary-red);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--cream);
+            letter-spacing: 1px;
+            text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .nav-btn {
+            padding: 0.65rem 1.4rem;
+            background: transparent;
+            border: 1.5px solid var(--primary-red);
+            color: var(--cream);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--primary-red);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(198, 40, 40, 0.45);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-btn {
+            padding: 0.65rem 1.4rem;
+            background: var(--primary-red);
+            color: var(--cream);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.75px;
+            transition: all 0.3s ease;
+        }
+
+        .user-btn:hover {
+            background: var(--light-red);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(198, 40, 40, 0.4);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: 1.5px solid var(--primary-red);
+            color: var(--cream);
+            padding: 0.45rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            letter-spacing: 0.5px;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-red), var(--gold));
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(145deg, rgba(45, 45, 45, 0.95), rgba(25, 25, 25, 0.95));
+            border-radius: 14px;
+            padding: 1.75rem;
+            border: 1px solid rgba(198, 40, 40, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-red), var(--gold));
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.05rem;
+            color: rgba(245, 245, 220, 0.85);
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.6px;
+        }
+
+        .dashboard-card .value {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--cream);
+        }
+
+        .dashboard-card .subtext {
+            margin-top: 1rem;
+            color: rgba(245, 245, 220, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Analytics Section */
+        .analytics-section {
+            margin-top: 2.5rem;
+        }
+
+        .analytics-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .analytics-card {
+            background: linear-gradient(145deg, rgba(40, 40, 40, 0.92), rgba(30, 30, 30, 0.92));
+            border: 1px solid rgba(198, 40, 40, 0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .analytics-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--cream);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(198, 40, 40, 0.2);
+        }
+
+        .analytics-content {
+            color: rgba(245, 245, 220, 0.85);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(198, 40, 40, 0.1);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge-small {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-badge-small.pending { background: var(--gold); }
+        .status-badge-small.preparing { background: #ff9800; }
+        .status-badge-small.ready { background: #4caf50; }
+        .status-badge-small.completed { background: #2196f3; }
+        .status-badge-small.cancelled { background: #f44336; }
+
+        .status-value {
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .top-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(198, 40, 40, 0.1);
+        }
+
+        .top-item:last-child {
+            border-bottom: none;
+        }
+
+        .top-item-rank {
+            font-weight: 700;
+            color: var(--primary-red);
+            margin-right: 0.75rem;
+            min-width: 24px;
+        }
+
+        .top-item-name {
+            flex: 1;
+        }
+
+        .top-item-count {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .revenue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(198, 40, 40, 0.1);
+        }
+
+        .revenue-item:last-child {
+            border-bottom: none;
+        }
+
+        .revenue-amount {
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 1.05rem;
+        }
+
+        .activity-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(198, 40, 40, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-time {
+            color: rgba(245, 245, 220, 0.6);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .empty-analytics {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: rgba(245, 245, 220, 0.6);
+            font-style: italic;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border-radius: 14px;
+            border: 1px solid rgba(198, 40, 40, 0.18);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 1.75rem;
+            border-bottom: 1px solid rgba(198, 40, 40, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .panel-header > div {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .panel-header h3 {
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .panel-body {
+            padding: 1.5rem 1.75rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .form-group label {
+            color: rgba(245, 245, 220, 0.85);
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.4px;
+        }
+
+        .form-control,
+        .form-select,
+        textarea {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(198, 40, 40, 0.25);
+            border-radius: 8px;
+            color: var(--cream);
+            font-size: 0.95rem;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-control:focus,
+        .form-select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.2);
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .btn,
+        .save-btn {
+            padding: 0.85rem 1.6rem;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: none;
+            border-radius: 8px;
+            color: var(--cream);
+            font-weight: 600;
+            letter-spacing: 0.7px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn:hover,
+        .save-btn:hover {
+            background: linear-gradient(135deg, var(--light-red), var(--primary-red));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(198, 40, 40, 0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1.5px solid rgba(198, 40, 40, 0.45);
+            color: var(--cream);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(198, 40, 40, 0.12);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--cream);
+        }
+
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(198, 40, 40, 0.18);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            color: rgba(245, 245, 220, 0.8);
+            font-size: 0.95rem;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .badge-available { background: rgba(76, 175, 80, 0.18); color: #4caf50; }
+        .badge-unavailable { background: rgba(255, 82, 82, 0.18); color: #ff5252; }
+        .badge-admin { background: rgba(198, 40, 40, 0.22); color: var(--primary-red); }
+        .badge-staff { background: rgba(63, 81, 181, 0.18); color: #7986cb; }
+        .badge-customer { background: rgba(33, 150, 243, 0.18); color: #42a5f5; }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .actions button {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            border: 1px solid rgba(198, 40, 40, 0.35);
+            background: transparent;
+            color: var(--cream);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .actions button:hover {
+            background: rgba(198, 40, 40, 0.15);
+            transform: translateY(-1px);
+            border-color: var(--primary-red);
+        }
+        
+        .actions button:active {
+            transform: translateY(0);
+        }
+
+        .review-card {
+            background: rgba(40, 40, 40, 0.92);
+            border: 1px solid rgba(198, 40, 40, 0.18);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .review-rating {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .empty-state {
+            padding: 2.5rem 1rem;
+            text-align: center;
+            color: rgba(245, 245, 220, 0.7);
+        }
+
+        .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+            opacity: 0.5;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 1500;
+            pointer-events: none;
+        }
+
+        .toast {
+            min-width: 280px;
+            max-width: 380px;
+            background: rgba(30, 30, 30, 0.95);
+            border: 1px solid rgba(198, 40, 40, 0.25);
+            border-left: 4px solid var(--primary-red);
+            border-radius: 10px;
+            padding: 0.95rem 1.25rem;
+            color: var(--cream);
+            font-size: 0.95rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-success { border-left-color: #4caf50; }
+        .toast-error { border-left-color: #ff5f52; }
+        .toast-info { border-left-color: var(--primary-red); }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-dialog {
+            width: min(500px, calc(100% - 2rem));
+            max-width: 90vw;
+            background: rgba(28, 28, 28, 0.95);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 14px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+            overflow: hidden;
+            transform: translateY(-16px);
+            transition: transform 0.25s ease;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.visible .modal-dialog {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--cream);
+        }
+
+        .modal-close {
+            border: none;
+            background: none;
+            color: rgba(245, 245, 220, 0.6);
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--cream);
+        }
+
+        .modal-body {
+            padding: 0 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            color: rgba(245, 245, 220, 0.85);
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-body p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .modal-description {
+            font-size: 0.95rem;
+            color: rgba(245, 245, 220, 0.7);
+        }
+
+        .modal-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .modal-form-group label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--cream);
+        }
+
+        .modal-form-group input,
+        .modal-form-group textarea,
+        .modal-form-group select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(198, 40, 40, 0.25);
+            border-radius: 8px;
+            padding: 0.75rem 0.95rem;
+            color: var(--cream);
+            font-size: 0.95rem;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .modal-form-group input:focus,
+        .modal-form-group textarea:focus,
+        .modal-form-group select:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.15);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .modal-footer {
+            padding: 0 1.5rem 1.25rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .dialog-btn {
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            padding: 0.75rem 1.4rem;
+            font-size: 0.95rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .dialog-btn:focus-visible {
+            outline: 2px solid rgba(212, 175, 55, 0.5);
+            outline-offset: 2px;
+        }
+
+        .dialog-btn-primary {
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            color: var(--cream);
+            box-shadow: 0 8px 18px rgba(198, 40, 40, 0.35);
+        }
+
+        .dialog-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(198, 40, 40, 0.4);
+        }
+
+        .dialog-btn-secondary {
+            background: transparent;
+            border: 1.5px solid rgba(198, 40, 40, 0.35);
+            color: var(--cream);
+        }
+
+        .dialog-btn-secondary:hover {
+            background: rgba(198, 40, 40, 0.18);
+        }
+
+        .dialog-btn-danger {
+            background: linear-gradient(135deg, #ff5f52, var(--primary-red));
+            color: var(--cream);
+            box-shadow: 0 8px 18px rgba(255, 95, 82, 0.3);
+        }
+
+        .dialog-btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(255, 95, 82, 0.35);
+        }
+
+        .modal-error {
+            font-size: 0.9rem;
+            color: #ff8a80;
+            background: rgba(255, 95, 82, 0.12);
+            border: 1px solid rgba(255, 95, 82, 0.25);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+
+        .image-library-item {
+            cursor: pointer;
+            padding: 0.5rem;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .image-library-item:hover {
+            border-color: var(--primary-red);
+            background: rgba(198, 40, 40, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .image-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .image-action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-image-action {
+            padding: 0.65rem 1.2rem;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+
+        .btn-image-action span {
+            font-size: 1rem;
+        }
+
+        .image-preview-container {
+            margin-top: 1rem;
+            display: none;
+            position: relative;
+            width: fit-content;
+        }
+
+        .image-preview-container.active {
+            display: block;
+        }
+
+        .image-preview-container img {
+            max-width: 250px;
+            max-height: 180px;
+            width: auto;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid rgba(198, 40, 40, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+        }
+
+        .image-preview-remove {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border: 2px solid var(--cream);
+            color: var(--cream);
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            line-height: 1;
+            padding: 0;
+        }
+
+        .image-preview-remove:hover {
+            background: linear-gradient(135deg, var(--light-red), var(--primary-red));
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(198, 40, 40, 0.5);
+        }
+
+        @media (min-width: 768px) {
+            .image-input-container {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .image-action-buttons {
+                flex-shrink: 0;
+            }
+
+            #menuItemImage {
+                flex: 1;
+            }
+        }
+
+        body.dialog-open {
+            overflow: hidden;
+        }
+        
+        /* Mobile user cards */
+        .user-cards-mobile {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .user-card-mobile {
+            background: rgba(40, 40, 40, 0.6);
+            border: 1px solid rgba(198, 40, 40, 0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        
+        .user-card-mobile:hover {
+            background: rgba(45, 45, 45, 0.7);
+            border-color: rgba(198, 40, 40, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (min-width: 769px) {
+            .user-cards-mobile {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            table {
+                display: none;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--cream);
+            background-color: rgba(0, 0, 0, 0.6);
+            margin-top: auto;
+            border-top: 1px solid rgba(198, 40, 40, 0.15);
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            letter-spacing: 0.4px;
+            opacity: 0.75;
+        }
+
+        /* Enhanced Mobile Responsiveness */
+        @media (max-width: 1200px) {
+            .main-container {
+                padding: 1.5rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .main-container {
+                padding: 1.5rem;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 1.25rem;
+            }
+            
+            .panel-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .panel-header > div {
+                width: 100%;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.75rem 1rem;
+            }
+
+            .header-content {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: linear-gradient(145deg, rgba(40, 40, 40, 0.98), rgba(30, 30, 30, 0.98));
+                backdrop-filter: blur(15px);
+                border-bottom: 2px solid var(--primary-red);
+                flex-direction: column;
+                width: 100%;
+                display: none;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+                padding: 0.85rem 1.2rem;
+                font-size: 0.95rem;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .header-actions {
+                gap: 0.5rem;
+            }
+            
+            .user-btn {
+                padding: 0.55rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+            
+            .dashboard-card {
+                padding: 1.25rem;
+            }
+            
+            .dashboard-card .value {
+                font-size: 1.9rem;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .analytics-card {
+                padding: 1.25rem;
+            }
+
+            .analytics-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .panel {
+                margin-bottom: 1.5rem;
+            }
+            
+            .panel-body {
+                padding: 1rem;
+            }
+            
+            .panel-header {
+                padding: 1rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .form-group {
+                margin-bottom: 0;
+            }
+            
+            .image-input-container {
+                flex-direction: column;
+            }
+            
+            .image-action-buttons {
+                width: 100%;
+            }
+            
+            .image-action-buttons button {
+                flex: 1;
+            }
+            
+            .actions {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+            
+            .actions button {
+                width: 100%;
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            table thead,
+            table tbody,
+            table tr {
+                display: block;
+            }
+            
+            table th,
+            table td {
+                display: block;
+                text-align: left;
+                padding: 0.75rem;
+                border-bottom: 1px solid rgba(198, 40, 40, 0.15);
+            }
+            
+            table th {
+                font-weight: 600;
+                background: rgba(198, 40, 40, 0.1);
+                border-bottom: 2px solid rgba(198, 40, 40, 0.3);
+            }
+            
+            table th:not(:first-child) {
+                margin-top: 1rem;
+            }
+            
+            .modal-dialog {
+                width: 95vw !important;
+                max-width: 95vw !important;
+                margin: 1rem;
+            }
+            
+            .modal-body {
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+            
+            .toast-container {
+                top: 1rem;
+                right: 1rem;
+                left: 1rem;
+                max-width: calc(100% - 2rem);
+            }
+            
+            .toast {
+                min-width: auto;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .main-container {
+                padding: 0.75rem;
+            }
+            
+            .header {
+                padding: 0.65rem 0.75rem;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .dashboard-card {
+                padding: 1rem;
+            }
+            
+            .dashboard-card .value {
+                font-size: 1.6rem;
+            }
+            
+            .dashboard-card h3 {
+                font-size: 0.95rem;
+            }
+            
+            .section-title {
+                font-size: 1.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .panel-body {
+                padding: 0.75rem;
+            }
+
+            .panel-header {
+                padding: 0.75rem;
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: flex-start;
+            }
+            
+            .panel-header h3 {
+                font-size: 1.1rem;
+            }
+            
+            .form-control,
+            .form-select,
+            textarea {
+                padding: 0.75rem 0.85rem;
+                font-size: 0.9rem;
+            }
+            
+            .btn,
+            .save-btn {
+                padding: 0.75rem 1.4rem;
+                font-size: 0.9rem;
+                width: 100%;
+            }
+            
+            .btn-secondary {
+                width: 100%;
+            }
+            
+            .user-search-container {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            #userSearchInput,
+            #userRoleFilter {
+                width: 100%;
+                max-width: 100%;
+                min-width: auto;
+            }
+            
+            .image-preview-container img {
+                max-width: 100%;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .dashboard-card .value {
+                font-size: 1.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .user-btn {
+                padding: 0.5rem 0.85rem;
+                font-size: 0.85rem;
+            }
+            
+            .mobile-menu-toggle {
+                padding: 0.4rem 0.7rem;
+                font-size: 1rem;
+            }
+        }
+        
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn,
+            .save-btn,
+            .nav-btn,
+            .user-btn,
+            .actions button {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .form-control,
+            .form-select {
+                min-height: 44px;
+            }
+        }
+        
+        /* Profile Settings */
+        .profile-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .profile-avatar-section {
+            background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.9));
+            border: 1px solid rgba(198, 40, 40, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+        }
+
+        .avatar-image-wrapper {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 2px solid rgba(198, 40, 40, 0.35);
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        }
+
+        .avatar-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .avatar-image-wrapper.has-image img {
+            display: block;
+        }
+
+        .avatar-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            font-size: 2.5rem;
+            color: rgba(245, 245, 220, 0.75);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .avatar-details {
+            flex: 1;
+            min-width: 220px;
+            color: #bbb;
+        }
+
+        .avatar-details h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+        }
+
+        .avatar-details p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .avatar-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .avatar-btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .avatar-btn.upload {
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            color: var(--cream);
+            box-shadow: 0 4px 12px rgba(198, 40, 40, 0.35);
+        }
+
+        .avatar-btn.upload:hover {
+            background: linear-gradient(135deg, var(--light-red), var(--primary-red));
+            transform: translateY(-2px);
+        }
+
+        .avatar-btn.remove {
+            background: transparent;
+            color: rgba(245, 245, 220, 0.85);
+            border: 1.5px solid rgba(245, 245, 220, 0.45);
+        }
+
+        .avatar-btn.remove:hover {
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+            transform: translateY(-2px);
+        }
+
+        .profile-section {
+            background: linear-gradient(145deg, rgba(40, 40, 40, 0.92), rgba(30, 30, 30, 0.92));
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(198, 40, 40, 0.15);
+        }
+        
+        .profile-section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--gold);
+        }
+        
+        /* Print styles */
+        @media print {
+            .header,
+            .nav-menu,
+            .header-actions,
+            .actions,
+            footer {
+                display: none;
+            }
+            
+            .main-container {
+                padding: 0;
+            }
+        }
+        
+        /* Profile responsive styles */
+        @media (max-width: 768px) {
+            .profile-avatar-section {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .avatar-image-wrapper {
+                margin-bottom: 1rem;
+            }
+
+            .avatar-details {
+                width: 100%;
+            }
+
+            .avatar-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+                width: 100%;
+            }
+
+            .avatar-btn {
+                width: 100%;
+                min-height: 44px;
+            }
+            
+            .profile-form {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 540px) {
+            .profile-avatar-section {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+                <div class="logo">SushiKami Admin</div>
+            </div>
+            <nav class="nav-menu" id="navMenu">
+                <button class="nav-btn active" data-section="dashboard" onclick="showSection('dashboard', this)">Dashboard</button>
+                <button class="nav-btn" data-section="menuManagement" onclick="showSection('menuManagement', this)">Menu Management</button>
+                <button class="nav-btn" data-section="userManagement" onclick="showSection('userManagement', this)">User Management</button>
+                <button class="nav-btn" data-section="profileSettings" onclick="showSection('profileSettings', this)">Profile Settings</button>
+            </nav>
+            <div class="header-actions">
+                <button class="user-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <main class="main-container">
+        <section id="dashboard" class="section active">
+            <h2 class="section-title">Dashboard Overview</h2>
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <h3>Total Earnings</h3>
+                    <div class="value" id="dashboardEarnings">₱0.00</div>
+                    <div class="subtext">Total revenue from all orders.</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Total Orders</h3>
+                    <div class="value" id="dashboardOrders">0</div>
+                    <div class="subtext">Pending, preparing, ready and completed.</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Reservations</h3>
+                    <div class="value" id="dashboardReservations">0</div>
+                    <div class="subtext">Upcoming and historical reservations.</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Registered Users</h3>
+                    <div class="value" id="dashboardUsers">0</div>
+                    <div class="subtext">Customers, staff and admin accounts.</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Available Menu Items</h3>
+                    <div class="value" id="dashboardMenuItems">0</div>
+                    <div class="subtext">Currently active items on the menu.</div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="analytics-section">
+                <h3 class="analytics-title">Analytics Overview</h3>
+                <div class="analytics-grid">
+                    <!-- Order Status Breakdown -->
+                    <div class="analytics-card">
+                        <h4>Order Status Breakdown</h4>
+                        <div id="orderStatusBreakdown" class="analytics-content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Top Selling Items -->
+                    <div class="analytics-card">
+                        <h4>Top Selling Items</h4>
+                        <div id="topSellingItems" class="analytics-content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Revenue by Status -->
+                    <div class="analytics-card">
+                        <h4>Revenue by Order Status</h4>
+                        <div id="revenueByStatus" class="analytics-content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="analytics-card">
+                        <h4>Recent Activity</h4>
+                        <div id="recentActivity" class="analytics-content">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="menuManagement" class="section">
+            <h2 class="section-title">Menu Management</h2>
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Add / Update Menu Items</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="menuForm" onsubmit="handleMenuFormSubmit(event); return false;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="menuItemName">Item Name</label>
+                                <input type="text" id="menuItemName" class="form-control" placeholder="e.g. Dragon Roll" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="menuItemCategory">Category</label>
+                                <select id="menuItemCategory" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    <option value="nigiri">Nigiri</option>
+                                    <option value="rolls">Rolls</option>
+                                    <option value="sashimi">Sashimi</option>
+                                    <option value="platters">Platters</option>
+                                    <option value="special">Special</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="menuItemPrice">Price (₱)</label>
+                                <input type="number" step="0.01" min="0" id="menuItemPrice" class="form-control" placeholder="e.g. 12.50" required>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label for="menuItemImage">Image</label>
+                                <div class="image-input-container">
+                                    <input type="url" id="menuItemImage" class="form-control" placeholder="Image URL or select from library">
+                                    <div class="image-action-buttons">
+                                        <button type="button" class="btn-secondary btn-image-action" onclick="openImageLibrary()">
+                                            <span>📚</span> Library
+                                        </button>
+                                        <input type="file" id="menuItemImageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                                        <button type="button" class="btn-secondary btn-image-action" onclick="document.getElementById('menuItemImageUpload').click()">
+                                            <span>📤</span> Upload
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="imagePreview" class="image-preview-container">
+                                    <img id="imagePreviewImg" src="" alt="Preview">
+                                    <button type="button" class="image-preview-remove" onclick="clearImagePreview()" title="Remove image">×</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="menuItemDescription">Description</label>
+                            <textarea id="menuItemDescription" class="form-control" placeholder="Describe the dish and ingredients" required></textarea>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1; margin-top: 0.5rem;">
+                            <button type="submit" class="save-btn" id="addMenuItemBtn">➕ Add Menu Item</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Current Menu Items</h3>
+                    <button class="btn" onclick="loadSampleMenuItems()">Load Sample Menu</button>
+                </div>
+                <div class="panel-body" id="menuItemsContainer">
+                    <!-- Menu table injected here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="userManagement" class="section">
+            <h2 class="section-title">User Management</h2>
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Registered Users</h3>
+                    <div class="user-search-container" style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                        <input type="text" id="userSearchInput" class="form-control" placeholder="🔍 Search users..." style="flex: 1; min-width: 200px; max-width: 300px;" oninput="filterUsers()">
+                        <select id="userRoleFilter" class="form-select" style="min-width: 150px;" onchange="filterUsers()">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="staff">Staff</option>
+                            <option value="customer">Customer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="panel-body" id="userTableContainer">
+                    <!-- Users table injected here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="reviewManagement" class="section">
+            <h2 class="section-title">Review Management</h2>
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Customer Feedback & Reviews</h3>
+                </div>
+                <div class="panel-body" id="reviewContainer">
+                    <!-- Reviews injected here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="profileSettings" class="section">
+            <h2 class="section-title">Profile Settings</h2>
+            <div class="profile-form">
+                <div class="profile-avatar-section">
+                    <div class="avatar-image-wrapper" id="avatarWrapper">
+                        <img id="profileAvatar" alt="Profile avatar">
+                        <span class="avatar-placeholder" id="avatarPlaceholder">🍣</span>
+                    </div>
+                    <div class="avatar-details">
+                        <h4 id="avatarNameHeading">Your Profile</h4>
+                        <p id="avatarDescription">Upload an image to personalize your SushiKami experience (JPG, PNG, GIF up to 3MB).</p>
+                        <div class="avatar-actions">
+                            <button class="avatar-btn upload" type="button" onclick="triggerAvatarUpload()">Upload Photo</button>
+                            <button class="avatar-btn remove" type="button" id="removeAvatarBtn" onclick="removeAvatar()" hidden>Remove Photo</button>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" hidden onchange="handleAvatarChange(event)">
+                    </div>
+                </div>
+                <div class="profile-section">
+                    <h3 class="profile-section-title">Personal Information</h3>
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" class="form-control" id="adminFirstName" placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" id="adminLastName" placeholder="Last Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="adminEmail" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="tel" class="form-control" id="adminContact" placeholder="Contact Number">
+                    </div>
+                    <button class="save-btn" onclick="handleProfileSubmit(event)">Save Changes</button>
+                </div>
+                <div class="profile-section">
+                    <h3 class="profile-section-title">Change Password</h3>
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" class="form-control" id="adminCurrentPassword" placeholder="Current Password">
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" class="form-control" id="adminNewPassword" placeholder="New Password (min. 8 characters)">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" class="form-control" id="adminConfirmPassword" placeholder="Confirm New Password">
+                    </div>
+                    <button class="save-btn" onclick="handlePasswordSubmit(event)">Change Password</button>
+                </div>
+            </div>
+        </section>
+        
+
+        <section id="staffManagement" class="section">
+            <h2 class="section-title">Staff Management</h2>
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Add Staff Member</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="staffForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="staffFirstName">First Name</label>
+                                <input type="text" id="staffFirstName" class="form-control" placeholder="First Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="staffLastName">Last Name</label>
+                                <input type="text" id="staffLastName" class="form-control" placeholder="Last Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="staffEmail">Email</label>
+                                <input type="email" id="staffEmail" class="form-control" placeholder="Email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="staffContact">Contact Number</label>
+                                <input type="tel" id="staffContact" class="form-control" placeholder="Contact Number">
+                            </div>
+                            <div class="form-group">
+                                <label for="staffPassword">Temporary Password</label>
+                                <input type="password" id="staffPassword" class="form-control" placeholder="Password (min. 8 characters)" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="staffRoleTitle">Role / Position</label>
+                                <input type="text" id="staffRoleTitle" class="form-control" placeholder="e.g. Shift Supervisor">
+                            </div>
+                        </div>
+                        <button type="submit" class="save-btn">Add Staff Member</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Staff Directory</h3>
+                </div>
+                <div class="panel-body" id="staffTableContainer">
+                    <!-- Staff table injected here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 SushiKami Admin Portal</p>
+    </footer>
+
+    <script>
+        const STORAGE_KEYS = {
+            currentUser: 'currentUser',
+            users: 'users',
+            menu: 'menuItems',
+            orders: 'orders',
+            reservations: 'reservations',
+            imageLibrary: 'imageLibrary'
+        };
+
+        const DEFAULT_ADMIN = {
+            id: 'admin-default',
+            firstName: 'System',
+            lastName: 'Admin',
+            email: 'admin@sushikami.com',
+            password: 'admin12345',
+            role: 'admin',
+            contact: '',
+            createdAt: '2023-01-01T00:00:00.000Z'
+        };
+
+        let session = null;
+        let users = [];
+        let menuItems = [];
+        let orders = [];
+        let reservations = [];
+
+        document.addEventListener('DOMContentLoaded', initializeAdminApp);
+        window.addEventListener('storage', handleStorageChange);
+
+        function initializeAdminApp() {
+            session = getCurrentUser();
+            if (!session || session.role !== 'admin') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            ensureDefaultAdmin();
+            users = loadUsers();
+            ensureSessionPresence();
+            menuItems = loadMenuItems();
+            orders = loadOrders();
+            reservations = loadReservations();
+
+            renderDashboard();
+            renderMenuTable();
+            filteredUsers = []; // Initialize filtered users
+            renderUserTable();
+            renderReviewList();
+            renderStaffTable();
+            populateProfileForm();
+
+            // Bind form submissions
+            const menuForm = document.getElementById('menuForm');
+            if (menuForm) {
+                menuForm.addEventListener('submit', handleMenuFormSubmit);
+            }
+            
+            // Add direct click handler as backup
+            const addMenuItemBtn = document.getElementById('addMenuItemBtn');
+            if (addMenuItemBtn) {
+                addMenuItemBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    handleMenuFormSubmit(e);
+                    return false;
+                }, true); // Use capture phase to ensure it fires first
+            }
+            
+            // Profile form handlers are now using onclick in HTML
+            document.getElementById('adminFirstName')?.addEventListener('input', updateAvatarDisplay);
+            document.getElementById('adminLastName')?.addEventListener('input', updateAvatarDisplay);
+            document.getElementById('staffForm').addEventListener('submit', handleStaffSubmit);
+            
+            // Initialize image preview
+            initializeImagePreview();
+        }
+
+        function handleStorageChange(event) {
+            if (event.key === STORAGE_KEYS.menu) {
+                menuItems = loadMenuItems();
+                renderMenuTable();
+                renderDashboard();
+            } else if (event.key === STORAGE_KEYS.orders) {
+                orders = loadOrders();
+                renderDashboard();
+            } else if (event.key === STORAGE_KEYS.reservations) {
+                reservations = loadReservations();
+                renderDashboard();
+            } else if (event.key === STORAGE_KEYS.users) {
+                users = loadUsers();
+                renderUserTable();
+                renderStaffTable();
+                renderDashboard();
+            }
+        }
+
+        function getCurrentUser() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEYS.currentUser));
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function ensureDefaultAdmin() {
+            const storedUsers = loadUsers();
+            const hasAdmin = storedUsers.some(user => user.role === 'admin');
+
+            if (!hasAdmin) {
+                storedUsers.push({ ...DEFAULT_ADMIN });
+                localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(storedUsers));
+            }
+        }
+
+        function ensureSessionPresence() {
+            if (!session) return;
+
+            const exists = users.some(user => user.id === session.id);
+            if (!exists) {
+                users.push({
+                    ...session,
+                    password: session.password || ''
+                });
+                saveUsers();
+                users = loadUsers();
+            }
+        }
+
+        function saveCurrentUser(user) {
+            localStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(user));
+        }
+
+        function loadUsers() {
+            const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.users));
+            return Array.isArray(stored) ? stored : [];
+        }
+
+        function saveUsers() {
+            localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
+        }
+
+        function loadMenuItems() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEYS.menu);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed)) {
+                        return parsed.map(item => ({
+                            id: item.id || Date.now() + Math.random(),
+                            name: item.name || 'Unnamed Item',
+                            description: item.description || '',
+                            price: Number(item.price) || 0,
+                            category: item.category || 'General',
+                            image: item.image || '',
+                            available: item.available !== false
+                        }));
+                    }
+                }
+                return [];
+            } catch (error) {
+                console.error('Error loading menu items:', error);
+                return [];
+            }
+        }
+
+        function saveMenuItems() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.menu, JSON.stringify(menuItems));
+                return true;
+            } catch (error) {
+                console.error('Error saving menu items:', error);
+                showToast('Error saving menu items to storage.', 'error');
+                return false;
+            }
+        }
+
+        function loadOrders() {
+            const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.orders));
+            return Array.isArray(stored) ? stored : [];
+        }
+
+        function saveOrders() {
+            localStorage.setItem(STORAGE_KEYS.orders, JSON.stringify(orders));
+        }
+
+        function loadReservations() {
+            const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.reservations));
+            return Array.isArray(stored) ? stored : [];
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => toast.classList.add('show'));
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('navMenu');
+            if (navMenu) {
+                navMenu.classList.toggle('active');
+            }
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navMenu = document.getElementById('navMenu');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (navMenu && navMenu.classList.contains('active')) {
+                if (!navMenu.contains(event.target) && !menuToggle?.contains(event.target)) {
+                    navMenu.classList.remove('active');
+                }
+            }
+        });
+
+        function showSection(sectionId, triggerElem) {
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId)?.classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            if (triggerElem && triggerElem.classList.contains('nav-btn')) {
+                triggerElem.classList.add('active');
+            } else {
+                const matchingBtn = document.querySelector(`.nav-btn[data-section="${sectionId}"]`);
+                matchingBtn?.classList.add('active');
+            }
+
+            // Close mobile menu
+            if (window.innerWidth <= 768) {
+                document.getElementById('navMenu')?.classList.remove('active');
+            }
+            
+            // Re-render user table if needed (for responsive layout changes)
+            if (sectionId === 'userManagement') {
+                setTimeout(() => renderUserTable(), 100);
+            }
+        }
+        
+        // Handle window resize for responsive layouts
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                // Re-render user table on resize to switch between mobile/desktop layouts
+                if (document.getElementById('userManagement')?.classList.contains('active')) {
+                    renderUserTable();
+                }
+            }, 250);
+        });
+
+        function renderDashboard() {
+            const totalEarnings = orders.reduce((sum, order) => sum + (Number(order.total) || 0), 0);
+            const totalOrders = orders.length;
+            const totalReservations = reservations.length;
+            const totalUsers = users.length;
+            const availableMenuItems = menuItems.filter(item => item.available !== false).length;
+
+            document.getElementById('dashboardEarnings').textContent = `₱${totalEarnings.toFixed(2)}`;
+            document.getElementById('dashboardOrders').textContent = totalOrders;
+            document.getElementById('dashboardReservations').textContent = totalReservations;
+            document.getElementById('dashboardUsers').textContent = totalUsers;
+            document.getElementById('dashboardMenuItems').textContent = availableMenuItems;
+
+            // Render analytics
+            renderAnalytics();
+        }
+
+        function renderAnalytics() {
+            renderOrderStatusBreakdown();
+            renderTopSellingItems();
+            renderRevenueByStatus();
+            renderRecentActivity();
+        }
+
+        function renderOrderStatusBreakdown() {
+            const container = document.getElementById('orderStatusBreakdown');
+            if (!container) return;
+
+            const statusCounts = {
+                pending: 0,
+                preparing: 0,
+                ready: 0,
+                completed: 0,
+                cancelled: 0
+            };
+
+            orders.forEach(order => {
+                const status = (order.status || 'pending').toLowerCase();
+                if (statusCounts.hasOwnProperty(status)) {
+                    statusCounts[status]++;
+                }
+            });
+
+            const total = orders.length;
+            
+            if (total === 0) {
+                container.innerHTML = '<div class="empty-analytics">No orders yet</div>';
+                return;
+            }
+
+            const statusLabels = {
+                pending: 'Pending',
+                preparing: 'Preparing',
+                ready: 'Ready',
+                completed: 'Completed',
+                cancelled: 'Cancelled'
+            };
+
+            let html = '';
+            Object.keys(statusCounts).forEach(status => {
+                const count = statusCounts[status];
+                const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+                html += `
+                    <div class="status-item">
+                        <div class="status-label">
+                            <span class="status-badge-small ${status}"></span>
+                            <span>${statusLabels[status]}</span>
+                        </div>
+                        <div class="status-value">${count} (${percentage}%)</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderTopSellingItems() {
+            const container = document.getElementById('topSellingItems');
+            if (!container) return;
+
+            // Count items sold
+            const itemCounts = {};
+            orders.forEach(order => {
+                if (order.items && Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        const itemName = item.name || 'Unknown';
+                        const quantity = item.quantity || 1;
+                        itemCounts[itemName] = (itemCounts[itemName] || 0) + quantity;
+                    });
+                }
+            });
+
+            // Sort by count and get top 5
+            const topItems = Object.entries(itemCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            if (topItems.length === 0) {
+                container.innerHTML = '<div class="empty-analytics">No sales data yet</div>';
+                return;
+            }
+
+            let html = '';
+            topItems.forEach(([name, count], index) => {
+                html += `
+                    <div class="top-item">
+                        <span class="top-item-rank">#${index + 1}</span>
+                        <span class="top-item-name">${escapeHtml(name)}</span>
+                        <span class="top-item-count">${count} sold</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderRevenueByStatus() {
+            const container = document.getElementById('revenueByStatus');
+            if (!container) return;
+
+            const revenueByStatus = {
+                pending: 0,
+                preparing: 0,
+                ready: 0,
+                completed: 0,
+                cancelled: 0
+            };
+
+            orders.forEach(order => {
+                const status = (order.status || 'pending').toLowerCase();
+                const total = Number(order.total) || 0;
+                if (revenueByStatus.hasOwnProperty(status)) {
+                    revenueByStatus[status] += total;
+                }
+            });
+
+            const totalRevenue = Object.values(revenueByStatus).reduce((sum, val) => sum + val, 0);
+
+            if (totalRevenue === 0) {
+                container.innerHTML = '<div class="empty-analytics">No revenue data yet</div>';
+                return;
+            }
+
+            const statusLabels = {
+                pending: 'Pending',
+                preparing: 'Preparing',
+                ready: 'Ready',
+                completed: 'Completed',
+                cancelled: 'Cancelled'
+            };
+
+            let html = '';
+            Object.keys(revenueByStatus).forEach(status => {
+                const revenue = revenueByStatus[status];
+                if (revenue > 0) {
+                    const percentage = ((revenue / totalRevenue) * 100).toFixed(1);
+                    html += `
+                        <div class="revenue-item">
+                            <div class="status-label">
+                                <span class="status-badge-small ${status}"></span>
+                                <span>${statusLabels[status]}</span>
+                            </div>
+                            <div class="revenue-amount">₱${revenue.toFixed(2)} (${percentage}%)</div>
+                        </div>
+                    `;
+                }
+            });
+
+            if (!html) {
+                html = '<div class="empty-analytics">No revenue data yet</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderRecentActivity() {
+            const container = document.getElementById('recentActivity');
+            if (!container) return;
+
+            // Combine recent orders and reservations
+            const activities = [];
+
+            // Add recent orders
+            orders.slice().sort((a, b) => {
+                const dateA = new Date(a.date || 0);
+                const dateB = new Date(b.date || 0);
+                return dateB - dateA;
+            }).slice(0, 5).forEach(order => {
+                activities.push({
+                    type: 'order',
+                    text: `Order #${order.id} - ${order.status || 'pending'}`,
+                    date: order.date || new Date().toISOString(),
+                    amount: order.total || 0
+                });
+            });
+
+            // Add recent reservations
+            reservations.slice().sort((a, b) => {
+                const dateA = new Date(a.date || 0);
+                const dateB = new Date(b.date || 0);
+                return dateB - dateA;
+            }).slice(0, 3).forEach(reservation => {
+                activities.push({
+                    type: 'reservation',
+                    text: `Reservation #${reservation.id} - ${reservation.status || 'pending'}`,
+                    date: reservation.date || new Date().toISOString(),
+                    guests: reservation.guests || 0
+                });
+            });
+
+            // Sort all activities by date
+            activities.sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateB - dateA;
+            });
+
+            // Get top 5 most recent
+            const recentActivities = activities.slice(0, 5);
+
+            if (recentActivities.length === 0) {
+                container.innerHTML = '<div class="empty-analytics">No recent activity</div>';
+                return;
+            }
+
+            let html = '';
+            recentActivities.forEach(activity => {
+                const date = new Date(activity.date);
+                const timeAgo = getTimeAgo(date);
+                const icon = activity.type === 'order' ? '📦' : '📅';
+                html += `
+                    <div class="activity-item">
+                        <div>${icon} ${escapeHtml(activity.text)}</div>
+                        <div class="activity-time">${timeAgo}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+            return date.toLocaleDateString();
+        }
+
+        function renderMenuTable() {
+            const container = document.getElementById('menuItemsContainer');
+            if (!container) return;
+
+            // Reload menu items to ensure we have latest data
+            menuItems = loadMenuItems();
+            
+            console.log('Rendering menu table with items:', menuItems); // Debug log
+
+            if (menuItems.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🍱</div>
+                        <p>No menu items available. Add a new item to get started.</p>
+                        <button class="btn" onclick="loadSampleMenuItems()" style="margin-top: 1rem;">Load Sample Menu Items</button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by category for better organization
+            const groupedItems = {};
+            menuItems.forEach(item => {
+                if (!groupedItems[item.category]) {
+                    groupedItems[item.category] = [];
+                }
+                groupedItems[item.category].push(item);
+            });
+
+            let tableHTML = '';
+            
+            Object.keys(groupedItems).sort().forEach(category => {
+                const categoryItems = groupedItems[category];
+                tableHTML += `
+                    <tr>
+                        <td colspan="4" style="background: rgba(198, 40, 40, 0.1); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                            ${category} (${categoryItems.length} items)
+                        </td>
+                    </tr>
+                `;
+                
+                categoryItems.forEach(item => {
+                    tableHTML += `
+                        <tr>
+                            <td>
+                                <strong>${escapeHtml(item.name)}</strong>
+                                <div style="color: rgba(245,245,220,0.65); font-size: 0.85rem;">${escapeHtml(item.description)}</div>
+                                ${item.image ? `<div style="margin-top: 0.5rem; font-size: 0.8rem; color: rgba(212, 175, 55, 0.7);">Image: ${item.image.substring(0, 50)}...</div>` : ''}
+                            </td>
+                            <td>₱${Number(item.price).toFixed(2)}</td>
+                            <td>
+                                <span class="badge ${item.available !== false ? 'badge-available' : 'badge-unavailable'}">
+                                    ${item.available !== false ? 'Available' : 'Unavailable'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button onclick="editMenuItem(${item.id})">Edit</button>
+                                    <button onclick="toggleMenuAvailability(${item.id})">${item.available !== false ? 'Disable' : 'Enable'}</button>
+                                    <button onclick="deleteMenuItem(${item.id})">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+
+            container.innerHTML = `
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Item Details</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableHTML}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function loadSampleMenuItems() {
+            const sampleItems = [
+                {
+                    id: Date.now() + 1,
+                    name: "Salmon Nigiri",
+                    description: "Fresh salmon on seasoned rice",
+                    price: 4.50,
+                    category: "nigiri",
+                    image: "",
+                    available: true
+                },
+                {
+                    id: Date.now() + 2,
+                    name: "Tuna Nigiri",
+                    description: "Premium tuna on seasoned rice",
+                    price: 5.00,
+                    category: "nigiri",
+                    image: "",
+                    available: true
+                },
+                {
+                    id: Date.now() + 3,
+                    name: "California Roll",
+                    description: "Crab, avocado, cucumber",
+                    price: 6.50,
+                    category: "rolls",
+                    image: "",
+                    available: true
+                },
+                {
+                    id: Date.now() + 4,
+                    name: "Dragon Roll",
+                    description: "Eel, cucumber, avocado, eel sauce",
+                    price: 12.00,
+                    category: "rolls",
+                    image: "",
+                    available: true
+                },
+                {
+                    id: Date.now() + 5,
+                    name: "Salmon Sashimi",
+                    description: "5 pieces of fresh salmon",
+                    price: 10.00,
+                    category: "sashimi",
+                    image: "",
+                    available: true
+                },
+                {
+                    id: Date.now() + 6,
+                    name: "Sushi Platter (Small)",
+                    description: "12 pieces assorted sushi",
+                    price: 25.00,
+                    category: "platters",
+                    image: "",
+                    available: true
+                },
+                {
+                    id: Date.now() + 7,
+                    name: "Chef's Special Roll",
+                    description: "Chef's signature creation",
+                    price: 16.00,
+                    category: "special",
+                    image: "",
+                    available: true
+                }
+            ];
+
+            menuItems = [...menuItems, ...sampleItems];
+            if (saveMenuItems()) {
+                renderMenuTable();
+                renderDashboard();
+                showToast('Sample menu items loaded successfully!', 'success');
+            }
+        }
+
+        function handleMenuFormSubmit(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            const name = document.getElementById('menuItemName').value.trim();
+            const category = document.getElementById('menuItemCategory').value;
+            const price = parseFloat(document.getElementById('menuItemPrice').value);
+            const image = document.getElementById('menuItemImage').value.trim();
+            const description = document.getElementById('menuItemDescription').value.trim();
+
+            // Validation
+            if (!name) {
+                showToast('Please enter a menu item name.', 'error');
+                document.getElementById('menuItemName').focus();
+                return false;
+            }
+
+            if (!category) {
+                showToast('Please select a category.', 'error');
+                document.getElementById('menuItemCategory').focus();
+                return false;
+            }
+
+            if (!description) {
+                showToast('Please enter a description.', 'error');
+                document.getElementById('menuItemDescription').focus();
+                return false;
+            }
+
+            if (isNaN(price) || price < 0) {
+                showToast('Please enter a valid price.', 'error');
+                document.getElementById('menuItemPrice').focus();
+                return false;
+            }
+
+            // Create new menu item
+            const newMenuItem = {
+                id: Date.now(),
+                name: name,
+                category: category,
+                price: price,
+                image: image || '',
+                description: description,
+                available: true
+            };
+
+            // Add to menu items array
+            menuItems.push(newMenuItem);
+
+            // Save to localStorage
+            if (saveMenuItems()) {
+                // Update UI
+                renderMenuTable();
+                renderDashboard();
+
+                // Reset form
+                document.getElementById('menuForm').reset();
+                clearImagePreview();
+
+                showToast('Menu item added successfully!', 'success');
+                
+                // Ensure we stay on the menuManagement section
+                showSection('menuManagement', null);
+            }
+
+            return false;
+        }
+
+        // Image Library Functions
+        function loadImageLibrary() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEYS.imageLibrary);
+                return stored ? JSON.parse(stored) : [];
+            } catch (error) {
+                console.error('Error loading image library:', error);
+                return [];
+            }
+        }
+
+        function saveImageLibrary(library) {
+            try {
+                localStorage.setItem(STORAGE_KEYS.imageLibrary, JSON.stringify(library));
+                return true;
+            } catch (error) {
+                console.error('Error saving image library:', error);
+                showToast('Error saving image to library.', 'error');
+                return false;
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select a valid image file.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                
+                // Add to image library
+                const library = loadImageLibrary();
+                const imageEntry = {
+                    id: Date.now(),
+                    data: imageData,
+                    name: file.name,
+                    uploadedAt: new Date().toISOString()
+                };
+                library.push(imageEntry);
+                saveImageLibrary(library);
+
+                // Set in form
+                document.getElementById('menuItemImage').value = imageData;
+                showImagePreview(imageData);
+                showToast('Image uploaded and added to library!', 'success');
+            };
+            reader.readAsDataURL(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+
+        function showImagePreview(imageSrc) {
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('imagePreviewImg');
+            if (imageSrc) {
+                previewImg.src = imageSrc;
+                preview.classList.add('active');
+            } else {
+                preview.classList.remove('active');
+            }
+        }
+
+        function clearImagePreview() {
+            document.getElementById('menuItemImage').value = '';
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('imagePreviewImg');
+            previewImg.src = '';
+            preview.classList.remove('active');
+        }
+
+        // Modal image functions
+        function handleImageUploadForModal(event, imageInputId, uniqueId) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select a valid image file.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                
+                // Add to image library
+                const library = loadImageLibrary();
+                const imageEntry = {
+                    id: Date.now(),
+                    data: imageData,
+                    name: file.name,
+                    uploadedAt: new Date().toISOString()
+                };
+                library.push(imageEntry);
+                saveImageLibrary(library);
+
+                // Set in modal input
+                const input = document.getElementById(imageInputId);
+                if (input) {
+                    input.value = imageData;
+                    showImagePreviewForModal(imageData, uniqueId);
+                    showToast('Image uploaded and added to library!', 'success');
+                }
+            };
+            reader.readAsDataURL(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+
+        function showImagePreviewForModal(imageSrc, uniqueId) {
+            const preview = document.getElementById(uniqueId + '_preview');
+            const previewImg = document.getElementById(uniqueId + '_previewImg');
+            if (imageSrc && preview && previewImg) {
+                previewImg.src = imageSrc;
+                preview.classList.add('active');
+            } else if (preview) {
+                preview.classList.remove('active');
+            }
+        }
+
+        function clearImagePreviewForModal(imageInputId, uniqueId) {
+            const input = document.getElementById(imageInputId);
+            if (input) {
+                input.value = '';
+            }
+            const preview = document.getElementById(uniqueId + '_preview');
+            const previewImg = document.getElementById(uniqueId + '_previewImg');
+            if (previewImg) previewImg.src = '';
+            if (preview) preview.classList.remove('active');
+        }
+
+        function openImageLibraryForModal(imageInputId, uniqueId) {
+            const library = loadImageLibrary();
+            
+            if (library.length === 0) {
+                showToast('No images in library. Please upload an image first.', 'info');
+                return;
+            }
+
+            const modal = createImageLibraryModalForEdit(library, imageInputId, uniqueId);
+            document.body.appendChild(modal);
+            modal.classList.add('visible');
+            document.body.classList.add('dialog-open');
+        }
+
+        function createImageLibraryModalForEdit(library, imageInputId, uniqueId) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.onclick = function(e) {
+                if (e.target === overlay) {
+                    closeModal(overlay);
+                }
+            };
+
+            const dialog = document.createElement('div');
+            dialog.className = 'modal-dialog';
+            dialog.style.width = 'min(90vw, 800px)';
+            dialog.onclick = function(e) {
+                e.stopPropagation();
+            };
+
+            let imagesHTML = '';
+            library.reverse().forEach(img => {
+                const safeName = escapeHtml(img.name);
+                const safeDate = new Date(img.uploadedAt).toLocaleDateString();
+                imagesHTML += `
+                    <div class="image-library-item" onclick="selectImageFromLibraryForModal('${imageInputId}', ${img.id}, '${uniqueId}')">
+                        <img src="${img.data.replace(/"/g, '&quot;')}" alt="${safeName}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(245,245,220,0.7); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${safeName}</div>
+                        <div style="font-size: 0.75rem; color: rgba(245,245,220,0.5); margin-top: 0.25rem;">
+                            ${safeDate}
+                        </div>
+                    </div>
+                `;
+            });
+
+            dialog.innerHTML = `
+                <div class="modal-header">
+                    <h3>Select Image from Library</h3>
+                    <button class="modal-close" onclick="closeModal(this.closest('.modal-overlay'))">&times;</button>
+                </div>
+                <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; padding: 0.5rem 0;">
+                        ${imagesHTML || '<p style="text-align: center; color: rgba(245,245,220,0.7);">No images in library.</p>'}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="dialog-btn dialog-btn-secondary" onclick="closeModal(this.closest('.modal-overlay'))">Cancel</button>
+                </div>
+            `;
+
+            overlay.appendChild(dialog);
+            return overlay;
+        }
+
+        function selectImageFromLibraryForModal(imageInputId, imageId, uniqueId) {
+            const library = loadImageLibrary();
+            const image = library.find(img => img.id == imageId);
+            if (image) {
+                const input = document.getElementById(imageInputId);
+                if (input) {
+                    input.value = image.data;
+                    showImagePreviewForModal(image.data, uniqueId);
+                    closeModal(document.querySelector('.modal-overlay:last-of-type'));
+                    showToast('Image selected!', 'success');
+                }
+            }
+        }
+
+        function openImageLibrary() {
+            const library = loadImageLibrary();
+            
+            if (library.length === 0) {
+                showToast('No images in library. Please upload an image first.', 'info');
+                return;
+            }
+
+            const modal = createImageLibraryModal(library);
+            document.body.appendChild(modal);
+            modal.classList.add('visible');
+            document.body.classList.add('dialog-open');
+        }
+
+        function createImageLibraryModal(library) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.onclick = function(e) {
+                if (e.target === overlay) {
+                    closeModal(overlay);
+                }
+            };
+
+            const dialog = document.createElement('div');
+            dialog.className = 'modal-dialog';
+            dialog.style.width = 'min(90vw, 800px)';
+            dialog.onclick = function(e) {
+                e.stopPropagation();
+            };
+
+            let imagesHTML = '';
+            library.reverse().forEach(img => {
+                const safeName = escapeHtml(img.name);
+                const safeDate = new Date(img.uploadedAt).toLocaleDateString();
+                imagesHTML += `
+                    <div class="image-library-item" onclick="selectImageFromLibrary(${img.id})">
+                        <img src="${img.data.replace(/"/g, '&quot;')}" alt="${safeName}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(245,245,220,0.7); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${safeName}</div>
+                        <div style="font-size: 0.75rem; color: rgba(245,245,220,0.5); margin-top: 0.25rem;">
+                            ${safeDate}
+                        </div>
+                    </div>
+                `;
+            });
+
+            dialog.innerHTML = `
+                <div class="modal-header">
+                    <h3>Select Image from Library</h3>
+                    <button class="modal-close" onclick="closeModal(this.closest('.modal-overlay'))">&times;</button>
+                </div>
+                <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; padding: 0.5rem 0;">
+                        ${imagesHTML || '<p style="text-align: center; color: rgba(245,245,220,0.7);">No images in library.</p>'}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="dialog-btn dialog-btn-secondary" onclick="closeModal(this.closest('.modal-overlay'))">Cancel</button>
+                </div>
+            `;
+
+            overlay.appendChild(dialog);
+            return overlay;
+        }
+
+        function selectImageFromLibrary(imageId) {
+            const library = loadImageLibrary();
+            const image = library.find(img => img.id == imageId);
+            if (image) {
+                document.getElementById('menuItemImage').value = image.data;
+                showImagePreview(image.data);
+                closeModal(document.querySelector('.modal-overlay'));
+                showToast('Image selected!', 'success');
+            }
+        }
+
+        function closeModal(overlay) {
+            if (overlay) {
+                overlay.classList.remove('visible');
+                setTimeout(() => overlay.remove(), 300);
+                document.body.classList.remove('dialog-open');
+            }
+        }
+
+        // Initialize image preview on page load
+        function initializeImagePreview() {
+            const imageInput = document.getElementById('menuItemImage');
+            if (imageInput) {
+                imageInput.addEventListener('input', function() {
+                    const value = this.value.trim();
+                    if (value) {
+                        showImagePreview(value);
+                    } else {
+                        clearImagePreview();
+                    }
+                });
+            }
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        async function editMenuItem(itemId) {
+            const item = menuItems.find(m => m.id === itemId);
+            if (!item) {
+                showToast('Menu item not found.', 'error');
+                return;
+            }
+
+            const result = await showFormModal({
+                title: 'Edit Menu Item',
+                description: 'Update the menu item details below.',
+                confirmText: 'Save changes',
+                fields: [
+                    {
+                        id: 'menuName',
+                        label: 'Item Name',
+                        type: 'text',
+                        value: item.name,
+                        required: true,
+                        autoFocus: true
+                    },
+                    {
+                        id: 'menuCategory',
+                        label: 'Category',
+                        type: 'select',
+                        value: item.category,
+                        required: true,
+                        options: [
+                            { value: 'nigiri', label: 'Nigiri' },
+                            { value: 'rolls', label: 'Rolls' },
+                            { value: 'sashimi', label: 'Sashimi' },
+                            { value: 'platters', label: 'Platters' },
+                            { value: 'special', label: 'Special' }
+                        ]
+                    },
+                    {
+                        id: 'menuPrice',
+                        label: 'Price (₱)',
+                        type: 'number',
+                        value: Number(item.price).toFixed(2),
+                        required: true,
+                        attributes: { min: '0', step: '0.01' }
+                    },
+                    {
+                        id: 'menuDescription',
+                        label: 'Description',
+                        type: 'textarea',
+                        value: item.description,
+                        required: true,
+                        attributes: { rows: 4 }
+                    },
+                    {
+                        id: 'menuImage',
+                        label: 'Image',
+                        type: 'image',
+                        value: item.image || '',
+                        placeholder: 'Image URL or select from library'
+                    }
+                ],
+                validate: values => {
+                    if (values.menuPrice === '' || Number.isNaN(values.menuPrice) || values.menuPrice < 0) {
+                        return 'Please enter a valid price.';
+                    }
+                    return null;
+                }
+            });
+
+            if (!result) {
+                return;
+            }
+
+            item.name = result.menuName;
+            item.category = result.menuCategory;
+            item.price = Number(result.menuPrice);
+            item.description = result.menuDescription;
+            item.image = result.menuImage || '';
+
+            if (saveMenuItems()) {
+                renderMenuTable();
+                renderDashboard();
+                showToast('Menu item updated.', 'success');
+            }
+        }
+
+        function toggleMenuAvailability(itemId) {
+            const item = menuItems.find(m => m.id === itemId);
+            if (!item) return;
+
+            item.available = !item.available;
+            if (saveMenuItems()) {
+                renderMenuTable();
+                renderDashboard();
+                showToast(`Menu item ${item.available ? 'enabled' : 'disabled'}.`, 'info');
+            }
+        }
+
+        async function deleteMenuItem(itemId) {
+            const item = menuItems.find(m => m.id === itemId);
+            if (!item) return;
+
+            const confirmed = await showConfirmation({
+                title: 'Delete Menu Item',
+                message: `Are you sure you want to delete "${item.name}" from the menu?`,
+                confirmText: 'Delete item',
+                cancelText: 'Cancel',
+                tone: 'danger'
+            });
+
+            if (!confirmed) {
+                return;
+            }
+
+            menuItems = menuItems.filter(m => m.id !== itemId);
+            if (saveMenuItems()) {
+                renderMenuTable();
+                renderDashboard();
+                showToast('Menu item removed.', 'success');
+            }
+        }
+
+        // ... (rest of the functions remain the same as in your original code)
+
+        let filteredUsers = [];
+
+        function filterUsers() {
+            const searchTerm = (document.getElementById('userSearchInput')?.value || '').toLowerCase().trim();
+            const roleFilter = document.getElementById('userRoleFilter')?.value || '';
+
+            filteredUsers = users.filter(user => {
+                const matchesSearch = !searchTerm || 
+                    (user.firstName || '').toLowerCase().includes(searchTerm) ||
+                    (user.lastName || '').toLowerCase().includes(searchTerm) ||
+                    (user.email || '').toLowerCase().includes(searchTerm) ||
+                    (user.contact || '').toLowerCase().includes(searchTerm);
+                
+                const matchesRole = !roleFilter || user.role === roleFilter;
+                
+                return matchesSearch && matchesRole;
+            });
+
+            renderUserTable();
+        }
+
+        function renderUserTable() {
+            const container = document.getElementById('userTableContainer');
+            if (!container) return;
+
+            const usersToDisplay = filteredUsers.length > 0 ? filteredUsers : users;
+
+            if (usersToDisplay.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">👤</div>
+                        <p>${filteredUsers.length === 0 && users.length > 0 ? 'No users match your search criteria.' : 'No users registered yet.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const rows = usersToDisplay
+                .slice()
+                .sort((a, b) => {
+                    // Sort by role first, then by name
+                    if (a.role !== b.role) {
+                        const roleOrder = { admin: 1, staff: 2, customer: 3 };
+                        return (roleOrder[a.role] || 99) - (roleOrder[b.role] || 99);
+                    }
+                    const nameA = ((a.firstName || '') + ' ' + (a.lastName || '')).trim().toLowerCase();
+                    const nameB = ((b.firstName || '') + ' ' + (b.lastName || '')).trim().toLowerCase();
+                    return nameA.localeCompare(nameB);
+                })
+                .map(user => {
+                    const fullName = ((user.firstName || '') + ' ' + (user.lastName || '')).trim() || 'No Name';
+                    const isCurrentUser = user.id === session?.id;
+                    
+                    return `
+                    <tr ${isCurrentUser ? 'style="background: rgba(198, 40, 40, 0.08);"' : ''}>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-red), var(--gold)); display: flex; align-items: center; justify-content: center; color: var(--cream); font-weight: 600; font-size: 1.1rem; flex-shrink: 0;">
+                                    ${(user.firstName?.[0] || user.email?.[0] || 'U').toUpperCase()}
+                                </div>
+                                <div style="flex: 1;">
+                                    <strong style="font-size: 1rem;">${escapeHtml(fullName)}</strong>
+                                    ${isCurrentUser ? '<span style="margin-left: 0.5rem; font-size: 0.75rem; color: var(--gold);">(You)</span>' : ''}
+                                    <div style="color: rgba(245,245,220,0.7); font-size: 0.9rem; margin-top: 0.25rem;">${escapeHtml(user.email || 'No email')}</div>
+                                    ${user.contact ? `<div style="color: rgba(245,245,220,0.6); font-size: 0.85rem; margin-top: 0.2rem;">📞 ${escapeHtml(user.contact)}</div>` : ''}
+                                    <div style="color: rgba(245,245,220,0.5); font-size: 0.8rem; margin-top: 0.3rem;">
+                                        📅 Registered: ${new Date(user.createdAt || Date.now()).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge badge-${user.role}">${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+                        </td>
+                        <td>
+                            <select class="form-select" onchange="updateUserRole('${user.id}', this.value)" ${isCurrentUser ? 'disabled style="opacity: 0.6; cursor: not-allowed;"' : ''} title="${isCurrentUser ? 'Cannot change your own role' : 'Change user role'}">
+                                ${['customer', 'staff', 'admin'].map(role => `
+                                    <option value="${role}" ${user.role === role ? 'selected' : ''}>${role.charAt(0).toUpperCase() + role.slice(1)}</option>
+                                `).join('')}
+                            </select>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <button onclick="viewUserDetails('${user.id}')" title="View user details">👁️ View</button>
+                                <button onclick="resetUserPassword('${user.id}')" title="Reset user password">🔑 Reset</button>
+                                ${!isCurrentUser ? `<button onclick="deleteUser('${user.id}')" style="color: #ff5252;" title="Delete user account">🗑️ Delete</button>` : '<span style="color: rgba(245,245,220,0.4); font-size: 0.85rem;">Cannot delete</span>'}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                }).join('');
+
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile) {
+                // Mobile-friendly card layout
+                container.innerHTML = `
+                    <div class="user-cards-mobile">
+                        ${usersToDisplay.map(user => {
+                            const fullName = ((user.firstName || '') + ' ' + (user.lastName || '')).trim() || 'No Name';
+                            const isCurrentUser = user.id === session?.id;
+                            
+                            return `
+                                <div class="user-card-mobile" ${isCurrentUser ? 'style="border: 2px solid var(--gold);"' : ''}>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                        <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-red), var(--gold)); display: flex; align-items: center; justify-content: center; color: var(--cream); font-weight: 600; font-size: 1.2rem; flex-shrink: 0;">
+                                            ${(user.firstName?.[0] || user.email?.[0] || 'U').toUpperCase()}
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <strong style="font-size: 1.1rem; display: block;">${escapeHtml(fullName)}</strong>
+                                            ${isCurrentUser ? '<span style="font-size: 0.75rem; color: var(--gold);">(You)</span>' : ''}
+                                            <div style="color: rgba(245,245,220,0.7); font-size: 0.9rem; margin-top: 0.25rem;">${escapeHtml(user.email || 'No email')}</div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-bottom: 0.75rem;">
+                                        <div style="font-size: 0.85rem; color: rgba(245,245,220,0.6); margin-bottom: 0.25rem;">Role:</div>
+                                        <span class="badge badge-${user.role}">${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+                                    </div>
+                                    <div style="margin-bottom: 0.75rem;">
+                                        <div style="font-size: 0.85rem; color: rgba(245,245,220,0.6); margin-bottom: 0.25rem;">Change Role:</div>
+                                        <select class="form-select" onchange="updateUserRole('${user.id}', this.value)" ${isCurrentUser ? 'disabled style="opacity: 0.6; cursor: not-allowed;"' : ''} style="width: 100%;">
+                                            ${['customer', 'staff', 'admin'].map(role => `
+                                                <option value="${role}" ${user.role === role ? 'selected' : ''}>${role.charAt(0).toUpperCase() + role.slice(1)}</option>
+                                            `).join('')}
+                                        </select>
+                                    </div>
+                                    ${user.contact ? `<div style="margin-bottom: 0.75rem; font-size: 0.85rem; color: rgba(245,245,220,0.6);">📞 ${escapeHtml(user.contact)}</div>` : ''}
+                                    <div style="margin-bottom: 1rem; font-size: 0.8rem; color: rgba(245,245,220,0.5);">
+                                        📅 Registered: ${new Date(user.createdAt || Date.now()).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                    </div>
+                                    <div class="actions" style="flex-direction: column;">
+                                        <button onclick="viewUserDetails('${user.id}')" style="width: 100%;">👁️ View Details</button>
+                                        <button onclick="resetUserPassword('${user.id}')" style="width: 100%;">🔑 Reset Password</button>
+                                        ${!isCurrentUser ? `<button onclick="deleteUser('${user.id}')" style="color: #ff5252; width: 100%;">🗑️ Delete Account</button>` : '<span style="color: rgba(245,245,220,0.4); font-size: 0.85rem; text-align: center; padding: 0.5rem;">Cannot delete your own account</span>'}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.03); border-radius: 8px; font-size: 0.85rem; color: rgba(245,245,220,0.7); line-height: 1.8;">
+                        <div><strong>Total Users:</strong> ${users.length}</div>
+                        <div><strong>Showing:</strong> ${usersToDisplay.length}</div>
+                        <div><strong>Admins:</strong> ${users.filter(u => u.role === 'admin').length} | <strong>Staff:</strong> ${users.filter(u => u.role === 'staff').length} | <strong>Customers:</strong> ${users.filter(u => u.role === 'customer').length}</div>
+                    </div>
+                `;
+            } else {
+                // Desktop table layout
+                container.innerHTML = `
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; min-width: 800px;">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 250px;">User Information</th>
+                                    <th style="min-width: 100px;">Current Role</th>
+                                    <th style="min-width: 150px;">Change Role</th>
+                                    <th style="min-width: 200px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.03); border-radius: 8px; font-size: 0.9rem; color: rgba(245,245,220,0.7);">
+                        <strong>Total Users:</strong> ${users.length} | 
+                        <strong>Showing:</strong> ${usersToDisplay.length} | 
+                        <strong>Admins:</strong> ${users.filter(u => u.role === 'admin').length} | 
+                        <strong>Staff:</strong> ${users.filter(u => u.role === 'staff').length} | 
+                        <strong>Customers:</strong> ${users.filter(u => u.role === 'customer').length}
+                    </div>
+                `;
+            }
+        }
+
+        function updateUserRole(userId, newRole) {
+            const user = users.find(u => u.id == userId);
+            if (!user) {
+                showToast('User not found.', 'error');
+                return;
+            }
+
+            if (user.id === session.id) {
+                showToast('You cannot modify your own role.', 'error');
+                renderUserTable();
+                return;
+            }
+
+            const oldRole = user.role;
+            if (oldRole === newRole) {
+                return; // No change needed
+            }
+
+            user.role = newRole;
+            saveUsers();
+            renderUserTable();
+            renderStaffTable();
+            renderDashboard();
+            showToast(`User role changed from ${oldRole} to ${newRole}.`, 'success');
+        }
+
+        async function resetUserPassword(userId) {
+            const user = users.find(u => u.id == userId);
+            if (!user) {
+                showToast('User not found.', 'error');
+                return;
+            }
+
+            const result = await showFormModal({
+                title: 'Reset User Password',
+                description: `Reset password for ${(user.firstName || '') + ' ' + (user.lastName || '') || user.email}`,
+                confirmText: 'Reset Password',
+                cancelText: 'Cancel',
+                fields: [
+                    {
+                        id: 'newPassword',
+                        label: 'New Password',
+                        type: 'password',
+                        value: '',
+                        required: true,
+                        placeholder: 'Enter new password (min. 8 characters)',
+                        autoFocus: true
+                    },
+                    {
+                        id: 'confirmPassword',
+                        label: 'Confirm Password',
+                        type: 'password',
+                        value: '',
+                        required: true,
+                        placeholder: 'Confirm new password'
+                    }
+                ],
+                validate: values => {
+                    if (values.newPassword.length < 8) {
+                        return 'Password must be at least 8 characters long.';
+                    }
+                    if (values.newPassword !== values.confirmPassword) {
+                        return 'Passwords do not match.';
+                    }
+                    return null;
+                }
+            });
+
+            if (!result) {
+                return;
+            }
+
+            user.password = result.newPassword;
+            saveUsers();
+            renderUserTable();
+            showToast('User password has been reset successfully.', 'success');
+        }
+
+        async function deleteUser(userId) {
+            const user = users.find(u => u.id == userId);
+            if (!user) {
+                showToast('User not found.', 'error');
+                return;
+            }
+
+            if (user.id === session.id) {
+                showToast('You cannot delete your own account.', 'error');
+                return;
+            }
+
+            const userDisplayName = ((user.firstName || '') + ' ' + (user.lastName || '')).trim() || user.email || 'this user';
+            
+            const confirmed = await showConfirmation({
+                title: 'Delete User Account',
+                message: `Are you sure you want to delete the account for "${userDisplayName}" (${user.email})? This action cannot be undone.`,
+                confirmText: 'Delete Account',
+                cancelText: 'Cancel',
+                tone: 'danger'
+            });
+
+            if (!confirmed) {
+                return;
+            }
+
+            // Remove user from users array
+            users = users.filter(u => u.id !== userId);
+            saveUsers();
+            
+            // Update filtered users if needed
+            if (filteredUsers.length > 0) {
+                filteredUsers = filteredUsers.filter(u => u.id !== userId);
+            }
+            
+            renderUserTable();
+            renderStaffTable();
+            renderDashboard();
+            showToast(`User account for "${userDisplayName}" has been deleted.`, 'success');
+        }
+
+        async function viewUserDetails(userId) {
+            const user = users.find(u => u.id == userId);
+            if (!user) {
+                showToast('User not found.', 'error');
+                return;
+            }
+
+            const fullName = ((user.firstName || '') + ' ' + (user.lastName || '')).trim() || 'No Name';
+            const registeredDate = new Date(user.createdAt || Date.now()).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.onclick = function(e) {
+                if (e.target === overlay) {
+                    closeModal(overlay);
+                }
+            };
+
+            const dialog = document.createElement('div');
+            dialog.className = 'modal-dialog';
+            dialog.onclick = function(e) {
+                e.stopPropagation();
+            };
+
+            dialog.innerHTML = `
+                <div class="modal-header">
+                    <h3>User Details</h3>
+                    <button class="modal-close" onclick="closeModal(this.closest('.modal-overlay'))">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-description">Viewing details for <strong>${escapeHtml(fullName)}</strong></p>
+                    <div class="modal-form-group">
+                        <label>First Name</label>
+                        <input type="text" value="${escapeHtml(user.firstName || 'Not provided')}" readonly style="background: rgba(255, 255, 255, 0.05); cursor: not-allowed;" class="form-control">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Last Name</label>
+                        <input type="text" value="${escapeHtml(user.lastName || 'Not provided')}" readonly style="background: rgba(255, 255, 255, 0.05); cursor: not-allowed;" class="form-control">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Email</label>
+                        <input type="email" value="${escapeHtml(user.email || 'Not provided')}" readonly style="background: rgba(255, 255, 255, 0.05); cursor: not-allowed;" class="form-control">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Contact Number</label>
+                        <input type="tel" value="${escapeHtml(user.contact || 'Not provided')}" readonly style="background: rgba(255, 255, 255, 0.05); cursor: not-allowed;" class="form-control">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Role</label>
+                        <input type="text" value="${escapeHtml(user.role.charAt(0).toUpperCase() + user.role.slice(1))}" readonly style="background: rgba(255, 255, 255, 0.05); cursor: not-allowed;" class="form-control">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Registered Date</label>
+                        <input type="text" value="${escapeHtml(registeredDate)}" readonly style="background: rgba(255, 255, 255, 0.05); cursor: not-allowed;" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="dialog-btn dialog-btn-primary" onclick="closeModal(this.closest('.modal-overlay'))">Close</button>
+                </div>
+            `;
+
+            overlay.appendChild(dialog);
+            document.body.appendChild(overlay);
+            document.body.classList.add('dialog-open');
+            requestAnimationFrame(() => overlay.classList.add('visible'));
+        }
+
+        function logout() {
+            localStorage.removeItem(STORAGE_KEYS.currentUser);
+            window.location.href = 'login.html';
+        }
+
+        // Modal dialog functions
+        function showFormModal(options) {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'modal-overlay';
+                overlay.onclick = function(e) {
+                    if (e.target === overlay) {
+                        closeModal(overlay);
+                        resolve(null);
+                    }
+                };
+
+                const dialog = document.createElement('div');
+                dialog.className = 'modal-dialog';
+                dialog.onclick = function(e) {
+                    e.stopPropagation();
+                };
+
+                let fieldsHTML = '';
+                if (options.fields) {
+                    options.fields.forEach(field => {
+                        const attrs = field.attributes || {};
+                        const attrString = Object.entries(attrs).map(([k, v]) => `${k}="${v}"`).join(' ');
+                        const required = field.required ? 'required' : '';
+                        const autofocus = field.autoFocus ? 'autofocus' : '';
+
+                        if (field.type === 'textarea') {
+                            fieldsHTML += `
+                                <div class="modal-form-group">
+                                    <label for="${field.id}">${field.label}</label>
+                                    <textarea id="${field.id}" ${required} ${autofocus} ${attrString}>${field.value || ''}</textarea>
+                                </div>
+                            `;
+                        } else if (field.type === 'select') {
+                            const optionsHTML = field.options ? field.options.map(opt => 
+                                `<option value="${opt.value}" ${opt.value === field.value ? 'selected' : ''}>${opt.label}</option>`
+                            ).join('') : '';
+                            fieldsHTML += `
+                                <div class="modal-form-group">
+                                    <label for="${field.id}">${field.label}</label>
+                                    <select id="${field.id}" ${required} ${autofocus} ${attrString}>${optionsHTML}</select>
+                                </div>
+                            `;
+                        } else if (field.type === 'image') {
+                            if (!field.uniqueId) {
+                                field.uniqueId = field.id + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                            }
+                            const uniqueId = field.uniqueId;
+                            fieldsHTML += `
+                                <div class="modal-form-group">
+                                    <label for="${field.id}">${field.label}</label>
+                                    <div class="image-input-container">
+                                        <input type="url" id="${field.id}" value="${field.value || ''}" 
+                                               placeholder="${field.placeholder || 'Image URL or select from library'}" 
+                                               class="form-control">
+                                        <div class="image-action-buttons">
+                                            <button type="button" class="btn-secondary btn-image-action" onclick="openImageLibraryForModal('${field.id}', '${uniqueId}')">
+                                                <span>📚</span> Library
+                                            </button>
+                                            <input type="file" id="${uniqueId}_upload" accept="image/*" style="display: none;" onchange="handleImageUploadForModal(event, '${field.id}', '${uniqueId}')">
+                                            <button type="button" class="btn-secondary btn-image-action" onclick="document.getElementById('${uniqueId}_upload').click()">
+                                                <span>📤</span> Upload
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="${uniqueId}_preview" class="image-preview-container">
+                                        <img id="${uniqueId}_previewImg" src="${field.value || ''}" alt="Preview">
+                                        <button type="button" class="image-preview-remove" onclick="clearImagePreviewForModal('${field.id}', '${uniqueId}')" title="Remove image">×</button>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            const readonlyAttr = attrs.readonly ? 'readonly' : '';
+                            fieldsHTML += `
+                                <div class="modal-form-group">
+                                    <label for="${field.id}">${field.label}</label>
+                                    <input type="${field.type || 'text'}" id="${field.id}" value="${field.value || ''}" 
+                                           placeholder="${field.placeholder || ''}" ${required} ${autofocus} ${readonlyAttr} ${attrString}>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                let errorHTML = '';
+                if (options.error) {
+                    errorHTML = `<div class="modal-error">${options.error}</div>`;
+                }
+
+                dialog.innerHTML = `
+                    <div class="modal-header">
+                        <h3>${options.title || 'Form'}</h3>
+                        <button class="modal-close" onclick="closeModal(this.closest('.modal-overlay')); arguments[0].stopPropagation();">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        ${options.description ? `<p class="modal-description">${options.description}</p>` : ''}
+                        ${errorHTML}
+                        ${fieldsHTML}
+                    </div>
+                    <div class="modal-footer">
+                        <button class="dialog-btn dialog-btn-secondary" onclick="closeModal(this.closest('.modal-overlay')); arguments[0].stopPropagation();">${options.cancelText || 'Cancel'}</button>
+                        <button class="dialog-btn dialog-btn-primary" onclick="handleFormModalSubmit(this.closest('.modal-overlay'), ${JSON.stringify(options).replace(/"/g, '&quot;')}, arguments[0]);">${options.confirmText || 'Confirm'}</button>
+                    </div>
+                `;
+
+                overlay.appendChild(dialog);
+                document.body.appendChild(overlay);
+                document.body.classList.add('dialog-open');
+                requestAnimationFrame(() => {
+                    overlay.classList.add('visible');
+                    // Initialize image previews in modal and setup listeners
+                    opts.fields.forEach(field => {
+                        if (field.type === 'image') {
+                            const uniqueId = field.uniqueId;
+                            if (uniqueId) {
+                                const preview = document.getElementById(uniqueId + '_preview');
+                                const previewImg = document.getElementById(uniqueId + '_previewImg');
+                                const input = document.getElementById(field.id);
+                                
+                                // Show preview if there's an existing value
+                                if (preview && previewImg && field.value) {
+                                    previewImg.src = field.value;
+                                    preview.classList.add('active');
+                                }
+                                
+                                // Setup input listener
+                                if (input) {
+                                    input.addEventListener('input', function() {
+                                        const value = this.value.trim();
+                                        if (value && preview && previewImg) {
+                                            previewImg.src = value;
+                                            preview.classList.add('active');
+                                        } else if (preview) {
+                                            preview.classList.remove('active');
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    });
+                });
+
+                window.handleFormModalSubmit = function(overlay, opts, event) {
+                    event.stopPropagation();
+                    const values = {};
+                    opts.fields.forEach(field => {
+                        const input = document.getElementById(field.id);
+                        if (input) {
+                            values[field.id] = input.value.trim();
+                        }
+                    });
+
+                    if (opts.validate) {
+                        const error = opts.validate(values);
+                        if (error) {
+                            const errorDiv = overlay.querySelector('.modal-error');
+                            if (errorDiv) {
+                                errorDiv.textContent = error;
+                            } else {
+                                const body = overlay.querySelector('.modal-body');
+                                const errorHTML = `<div class="modal-error">${error}</div>`;
+                                body.insertAdjacentHTML('afterbegin', errorHTML);
+                            }
+                            return;
+                        }
+                    }
+
+                    closeModal(overlay);
+                    resolve(values);
+                };
+            });
+        }
+
+        function showConfirmation(options) {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'modal-overlay';
+                overlay.onclick = function(e) {
+                    if (e.target === overlay) {
+                        closeModal(overlay);
+                        resolve(false);
+                    }
+                };
+
+                const dialog = document.createElement('div');
+                dialog.className = 'modal-dialog';
+                dialog.onclick = function(e) {
+                    e.stopPropagation();
+                };
+
+                const btnClass = options.tone === 'danger' ? 'dialog-btn-danger' : 'dialog-btn-primary';
+
+                dialog.innerHTML = `
+                    <div class="modal-header">
+                        <h3>${options.title || 'Confirm'}</h3>
+                        <button class="modal-close" onclick="closeModal(this.closest('.modal-overlay')); arguments[0].stopPropagation();">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>${options.message || 'Are you sure?'}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="dialog-btn dialog-btn-secondary" onclick="closeModal(this.closest('.modal-overlay')); arguments[0].stopPropagation();">${options.cancelText || 'Cancel'}</button>
+                        <button class="dialog-btn ${btnClass}" onclick="closeModal(this.closest('.modal-overlay')); arguments[0].stopPropagation(); window.__confirmationResult = true;">${options.confirmText || 'Confirm'}</button>
+                    </div>
+                `;
+
+                overlay.appendChild(dialog);
+                document.body.appendChild(overlay);
+                document.body.classList.add('dialog-open');
+                requestAnimationFrame(() => overlay.classList.add('visible'));
+
+                const confirmBtn = dialog.querySelector(`.${btnClass}`);
+                confirmBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    closeModal(overlay);
+                    resolve(true);
+                };
+
+                const cancelBtn = dialog.querySelector('.dialog-btn-secondary');
+                cancelBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    closeModal(overlay);
+                    resolve(false);
+                };
+            });
+        }
+
+        // ==================== PROFILE MANAGEMENT ====================
+
+        function populateProfileForm() {
+            if (!session) return;
+            
+            const firstName = session.firstName || '';
+            const lastName = session.lastName || '';
+            const email = session.email || '';
+            const contact = session.contact || '';
+            const avatar = session.avatar || '';
+            
+            document.getElementById('adminFirstName').value = firstName;
+            document.getElementById('adminLastName').value = lastName;
+            document.getElementById('adminEmail').value = email;
+            document.getElementById('adminContact').value = contact;
+            
+            if (avatar) {
+                document.getElementById('profileAvatar').src = avatar;
+                document.getElementById('avatarWrapper').classList.add('has-image');
+                document.getElementById('removeAvatarBtn').hidden = false;
+            }
+            
+            updateAvatarDisplay();
+        }
+
+        function handleProfileSubmit(event) {
+            if (event) {
+                event.preventDefault();
+            }
+            
+            if (!session) {
+                showToast('Session expired. Please log in again.', 'error');
+                return;
+            }
+            
+            const firstName = document.getElementById('adminFirstName').value.trim();
+            const lastName = document.getElementById('adminLastName').value.trim();
+            const email = document.getElementById('adminEmail').value.trim();
+            const contact = document.getElementById('adminContact').value.trim();
+            const avatar = document.getElementById('profileAvatar')?.src || '';
+            
+            if (!firstName || !lastName || !email) {
+                showToast('Please fill in all required fields', 'warning');
+                return;
+            }
+            
+            // Update session user
+            session.firstName = firstName;
+            session.lastName = lastName;
+            session.email = email;
+            session.contact = contact;
+            session.avatar = avatar;
+            
+            // Update in users array
+            const userIndex = users.findIndex(u => u.id === session.id);
+            if (userIndex !== -1) {
+                users[userIndex].firstName = firstName;
+                users[userIndex].lastName = lastName;
+                users[userIndex].email = email;
+                users[userIndex].contact = contact;
+                users[userIndex].avatar = avatar;
+                saveUsers();
+            }
+            
+            // Update current user in localStorage
+            localStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(session));
+            
+            showToast('Profile updated successfully!', 'success');
+            updateAvatarDisplay();
+        }
+
+        function handlePasswordSubmit(event) {
+            if (event) {
+                event.preventDefault();
+            }
+            
+            const current = document.getElementById('adminCurrentPassword')?.value;
+            const newPass = document.getElementById('adminNewPassword')?.value;
+            const confirm = document.getElementById('adminConfirmPassword')?.value;
+
+            if (!current || !newPass || !confirm) {
+                showToast('Please fill in all password fields', 'warning');
+                return;
+            }
+
+            if (newPass.length < 8) {
+                showToast('New password must be at least 8 characters', 'warning');
+                return;
+            }
+
+            if (newPass !== confirm) {
+                showToast('New passwords do not match', 'error');
+                return;
+            }
+
+            // In a real app, this would verify the current password and update it
+            if (!session) {
+                showToast('Session expired. Please log in again.', 'error');
+                return;
+            }
+            
+            // Update password in users array
+            const userIndex = users.findIndex(u => u.id === session.id);
+            if (userIndex !== -1) {
+                users[userIndex].password = newPass;
+                saveUsers();
+            }
+            
+            showToast('Password changed successfully!', 'success');
+            
+            // Clear fields
+            document.getElementById('adminCurrentPassword').value = '';
+            document.getElementById('adminNewPassword').value = '';
+            document.getElementById('adminConfirmPassword').value = '';
+        }
+
+        function triggerAvatarUpload() {
+            document.getElementById('avatarInput')?.click();
+        }
+
+        function handleAvatarChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 3 * 1024 * 1024) {
+                showToast('Image must be less than 3MB', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const avatarImg = document.getElementById('profileAvatar');
+                const wrapper = document.getElementById('avatarWrapper');
+                
+                avatarImg.src = e.target.result;
+                wrapper.classList.add('has-image');
+                document.getElementById('removeAvatarBtn').hidden = false;
+                
+                showToast('Avatar uploaded successfully!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeAvatar() {
+            const avatarImg = document.getElementById('profileAvatar');
+            const wrapper = document.getElementById('avatarWrapper');
+            
+            avatarImg.src = '';
+            wrapper.classList.remove('has-image');
+            document.getElementById('removeAvatarBtn').hidden = true;
+            document.getElementById('avatarInput').value = '';
+            
+            showToast('Avatar removed', 'info');
+        }
+
+        function updateAvatarDisplay() {
+            const firstName = document.getElementById('adminFirstName')?.value || '';
+            const lastName = document.getElementById('adminLastName')?.value || '';
+            const placeholder = document.getElementById('avatarPlaceholder');
+            const heading = document.getElementById('avatarNameHeading');
+            
+            if (firstName || lastName) {
+                const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+                placeholder.textContent = initials || '🍣';
+                heading.textContent = `${firstName} ${lastName}`.trim() || 'Your Profile';
+            } else {
+                placeholder.textContent = '🍣';
+                heading.textContent = 'Your Profile';
+            }
+        }
+    </script>
+</body>
+</html>

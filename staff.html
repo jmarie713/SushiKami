@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>SushiKami | Staff Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #C62828;
+            --dark-red: #8e0000;
+            --light-red: #ff5f52;
+            --black: #1A1A1A;
+            --cream: #F5F5DC;
+            --gold: #d4af37;
+            --dark-gold: #b8941f;
+            --light-gold: #f4e4a6;
+            --dark-gray: #2a2a2a;
+            --panel-bg: rgba(35, 35, 35, 0.92);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--black);
+            color: var(--cream);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(15, 15, 15, 0.75) 0%, rgba(26, 26, 26, 0.85) 100%);
+            z-index: -1;
+        }
+
+        .header {
+            background: linear-gradient(145deg, rgba(40, 40, 40, 0.95), rgba(30, 30, 30, 0.95));
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--primary-red);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            color: var(--cream);
+            text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.35rem;
+            background: transparent;
+            border: 1.5px solid var(--primary-red);
+            color: var(--cream);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--primary-red);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(198, 40, 40, 0.45);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-btn {
+            padding: 0.65rem 1.4rem;
+            background: var(--primary-red);
+            color: var(--cream);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.75px;
+            transition: all 0.3s ease;
+        }
+
+        .user-btn:hover {
+            background: var(--light-red);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(198, 40, 40, 0.4);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: 1.5px solid var(--primary-red);
+            color: var(--cream);
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.3rem;
+            margin-bottom: 1.8rem;
+            text-align: center;
+            position: relative;
+            letter-spacing: 0.5px;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-red), var(--gold));
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(145deg, rgba(45, 45, 45, 0.95), rgba(25, 25, 25, 0.95));
+            border-radius: 14px;
+            padding: 1.75rem;
+            border: 1px solid rgba(198, 40, 40, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-red), var(--gold));
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.05rem;
+            color: rgba(245, 245, 220, 0.8);
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.6px;
+        }
+
+        .dashboard-card .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--cream);
+        }
+
+        .dashboard-card .subtext {
+            margin-top: 1rem;
+            color: rgba(245, 245, 220, 0.65);
+            font-size: 0.9rem;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border-radius: 14px;
+            border: 1px solid rgba(198, 40, 40, 0.2);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 1.75rem;
+            border-bottom: 1px solid rgba(198, 40, 40, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .panel-header h3 {
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .panel-body {
+            padding: 1.5rem 1.75rem;
+        }
+
+        .orders-table,
+        .reservations-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--cream);
+        }
+
+        .orders-table th,
+        .orders-table td,
+        .reservations-table th,
+        .reservations-table td {
+            padding: 0.95rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(198, 40, 40, 0.15);
+            vertical-align: top;
+        }
+
+        .orders-table th,
+        .reservations-table th {
+            font-weight: 600;
+            color: rgba(245, 245, 220, 0.8);
+            letter-spacing: 0.5px;
+            font-size: 0.95rem;
+        }
+
+        .orders-table tbody tr:hover,
+        .reservations-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-pending { background: rgba(255, 193, 7, 0.18); color: #ffc107; }
+        .status-preparing { background: rgba(33, 150, 243, 0.18); color: #2196f3; }
+        .status-ready { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+        .status-completed { background: rgba(198, 40, 40, 0.2); color: var(--primary-red); }
+        .status-confirmed { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+        .status-cancelled { background: rgba(255, 82, 82, 0.18); color: #ff5252; }
+        .status-seated { background: rgba(63, 81, 181, 0.18); color: #3f51b5; }
+
+        .inline-select {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(198, 40, 40, 0.25);
+            color: var(--cream);
+            border-radius: 8px;
+            padding: 0.55rem 1.1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .inline-select:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+        }
+
+        .item-list {
+            margin: 0.35rem 0 0;
+            color: rgba(245, 245, 220, 0.75);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .item-list li {
+            margin-left: 1.2rem;
+        }
+
+        .empty-state {
+            padding: 3rem 1rem;
+            text-align: center;
+            color: rgba(245, 245, 220, 0.7);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Profile Settings */
+        .profile-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .profile-avatar-section {
+            background: linear-gradient(145deg, rgba(40, 40, 40, 0.9), rgba(30, 30, 30, 0.9));
+            border: 1px solid rgba(198, 40, 40, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+        }
+
+        .avatar-image-wrapper {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 2px solid rgba(198, 40, 40, 0.35);
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        }
+
+        .avatar-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .avatar-image-wrapper.has-image img {
+            display: block;
+        }
+
+        .avatar-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            font-size: 2.5rem;
+            color: rgba(245, 245, 220, 0.75);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .avatar-details {
+            flex: 1;
+            min-width: 220px;
+            color: #bbb;
+        }
+
+        .avatar-details h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+        }
+
+        .avatar-details p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .avatar-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .avatar-btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .avatar-btn.upload {
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            color: var(--cream);
+            box-shadow: 0 4px 12px rgba(198, 40, 40, 0.35);
+        }
+
+        .avatar-btn.upload:hover {
+            background: linear-gradient(135deg, var(--light-red), var(--primary-red));
+            transform: translateY(-2px);
+        }
+
+        .avatar-btn.remove {
+            background: transparent;
+            color: rgba(245, 245, 220, 0.85);
+            border: 1.5px solid rgba(245, 245, 220, 0.45);
+        }
+
+        .avatar-btn.remove:hover {
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+            transform: translateY(-2px);
+        }
+
+        .profile-section {
+            background: linear-gradient(145deg, rgba(40, 40, 40, 0.92), rgba(30, 30, 30, 0.92));
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(198, 40, 40, 0.15);
+        }
+        
+        .profile-section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--gold);
+        }
+        
+        .save-btn {
+            padding: 0.8rem 2rem;
+            background: var(--primary-red);
+            color: var(--cream);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .save-btn:hover {
+            background: var(--light-red);
+            transform: translateY(-2px);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(245, 245, 220, 0.85);
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.4px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(198, 40, 40, 0.25);
+            border-radius: 8px;
+            color: var(--cream);
+            font-size: 0.95rem;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.2);
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+
+
+        .toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 1500;
+            pointer-events: none;
+        }
+
+        .toast {
+            min-width: 260px;
+            max-width: 360px;
+            background: rgba(30, 30, 30, 0.95);
+            border: 1px solid rgba(198, 40, 40, 0.25);
+            border-left: 4px solid var(--primary-red);
+            border-radius: 10px;
+            padding: 0.9rem 1.2rem;
+            color: var(--cream);
+            font-size: 0.95rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-success { border-left-color: #4caf50; }
+        .toast-error { border-left-color: #ff5f52; }
+        .toast-info { border-left-color: var(--primary-red); }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--cream);
+            background-color: rgba(0, 0, 0, 0.6);
+            margin-top: auto;
+            border-top: 1px solid rgba(198, 40, 40, 0.15);
+        }
+
+        footer p {
+            font-size: 0.95rem;
+            letter-spacing: 0.4px;
+            opacity: 0.75;
+        }
+
+        @media (max-width: 992px) {
+            .main-container {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .header-content {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: linear-gradient(145deg, rgba(40, 40, 40, 0.98), rgba(30, 30, 30, 0.98));
+                backdrop-filter: blur(15px);
+                border-bottom: 2px solid var(--primary-red);
+                flex-direction: column;
+                width: 100%;
+                display: none;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+                padding: 0.75rem;
+                gap: 0.4rem;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+                padding: 0.65rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                padding: 0.4rem 0.6rem;
+                font-size: 1.1rem;
+            }
+
+            .user-btn {
+                padding: 0.45rem 0.85rem;
+                font-size: 0.85rem;
+            }
+
+            .main-container {
+                padding: 0.75rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .dashboard-card {
+                padding: 0.9rem;
+            }
+
+            .dashboard-card .value {
+                font-size: 1.6rem;
+            }
+
+            .dashboard-card h3 {
+                font-size: 0.9rem;
+            }
+
+            .orders-table,
+            .reservations-table {
+                font-size: 0.85rem;
+            }
+
+            .inline-select {
+                width: 100%;
+                min-width: 0;
+                padding: 0.5rem 0.85rem;
+                font-size: 0.85rem;
+            }
+
+            .panel {
+                margin-bottom: 1rem;
+            }
+
+            .panel-body {
+                padding: 0.85rem;
+            }
+
+            .panel-header {
+                padding: 0.85rem;
+            }
+
+            .profile-avatar-section {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 1rem;
+            }
+
+            .avatar-image-wrapper {
+                margin-bottom: 0.75rem;
+            }
+
+            .avatar-details {
+                width: 100%;
+            }
+
+            .avatar-actions {
+                flex-direction: column;
+                gap: 0.6rem;
+                width: 100%;
+            }
+
+            .avatar-btn {
+                width: 100%;
+                min-height: 44px;
+                padding: 0.65rem 1.2rem;
+                font-size: 0.85rem;
+            }
+            
+            .form-control,
+            textarea,
+            select {
+                min-height: 44px;
+                font-size: 0.9rem;
+                padding: 0.6rem 0.75rem;
+            }
+            
+            .form-group {
+                margin-bottom: 0.9rem;
+            }
+            
+            .profile-form {
+                max-width: 100%;
+            }
+
+            .profile-section {
+                padding: 1.25rem;
+            }
+
+            .profile-section-title {
+                font-size: 1.3rem;
+                margin-bottom: 1rem;
+            }
+
+            .save-btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .main-container {
+                padding: 0.5rem;
+            }
+
+            .header {
+                padding: 0.5rem 0.6rem;
+            }
+
+            .logo {
+                font-size: 1.15rem;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+                margin-bottom: 1rem;
+            }
+
+            .dashboard-cards {
+                gap: 0.6rem;
+            }
+
+            .dashboard-card {
+                padding: 0.75rem;
+            }
+
+            .dashboard-card .value {
+                font-size: 1.4rem;
+            }
+
+            .dashboard-card h3 {
+                font-size: 0.85rem;
+            }
+
+            .panel {
+                margin-bottom: 0.85rem;
+            }
+
+            .panel-body {
+                padding: 0.65rem;
+            }
+
+            .panel-header {
+                padding: 0.65rem;
+                flex-direction: column;
+                gap: 0.6rem;
+                align-items: flex-start;
+            }
+
+            .panel-header h3 {
+                font-size: 1rem;
+            }
+
+            .profile-avatar-section {
+                padding: 0.85rem;
+            }
+
+            .profile-section {
+                padding: 1rem;
+            }
+
+            .profile-section-title {
+                font-size: 1.15rem;
+                margin-bottom: 0.85rem;
+            }
+            
+            .form-control,
+            textarea,
+            select {
+                padding: 0.65rem;
+                font-size: 0.85rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.75rem;
+            }
+
+            .save-btn {
+                padding: 0.65rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .header {
+                padding: 0.4rem 0.5rem;
+            }
+
+            .logo {
+                font-size: 1.05rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+                margin-bottom: 0.85rem;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .dashboard-card {
+                padding: 0.65rem;
+            }
+
+            .dashboard-card .value {
+                font-size: 1.3rem;
+            }
+
+            .dashboard-card h3 {
+                font-size: 0.8rem;
+            }
+
+            .panel-body {
+                padding: 0.6rem;
+            }
+
+            .panel-header {
+                padding: 0.6rem;
+            }
+
+            .profile-avatar-section {
+                padding: 0.75rem;
+            }
+
+            .profile-section {
+                padding: 0.85rem;
+            }
+
+            .form-control,
+            textarea,
+            select {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+                <div class="logo">SushiKami Staff</div>
+            </div>
+            <nav class="nav-menu" id="navMenu">
+                <button class="nav-btn active" data-section="dashboard" onclick="showSection('dashboard', this)">Dashboard</button>
+                <button class="nav-btn" data-section="orders" onclick="showSection('orders', this)">Orders</button>
+                <button class="nav-btn" data-section="reservations" onclick="showSection('reservations', this)">Reservations</button>
+                <button class="nav-btn" data-section="profile" onclick="showSection('profile', this)">Profile</button>
+            </nav>
+            <div class="header-actions">
+                <button class="user-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <main class="main-container">
+        <section id="dashboard" class="section active">
+            <h2 class="section-title">Team Overview</h2>
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <h3>Total Earnings</h3>
+                    <div class="value" id="dashboardEarnings">₱0.00</div>
+                    <div class="subtext">Gross revenue from completed and in-progress orders.</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Total Orders</h3>
+                    <div class="value" id="dashboardOrders">0</div>
+                    <div class="subtext">Incoming, preparing, ready and completed orders.</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Pending Orders</h3>
+                    <div class="value" id="dashboardPending">0</div>
+                    <div class="subtext">Orders awaiting preparation.</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Reservations</h3>
+                    <div class="value" id="dashboardReservations">0</div>
+                    <div class="subtext">Upcoming dining reservations on record.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="orders" class="section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Order Management</h3>
+                </div>
+                <div class="panel-body" id="ordersContainer">
+                    <!-- Orders will be injected here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="reservations" class="section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>Reservation Management</h3>
+                </div>
+                <div class="panel-body" id="reservationsContainer">
+                    <!-- Reservations will be injected here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="profile" class="section">
+            <h2 class="section-title">Profile Settings</h2>
+            <div class="profile-form">
+                <div class="profile-avatar-section">
+                    <div class="avatar-image-wrapper" id="avatarWrapper">
+                        <img id="profileAvatar" alt="Profile avatar">
+                        <span class="avatar-placeholder" id="avatarPlaceholder">🍣</span>
+                    </div>
+                    <div class="avatar-details">
+                        <h4 id="avatarNameHeading">Your Profile</h4>
+                        <p id="avatarDescription">Upload an image to personalize your SushiKami experience (JPG, PNG, GIF up to 3MB).</p>
+                        <div class="avatar-actions">
+                            <button class="avatar-btn upload" type="button" onclick="triggerAvatarUpload()">Upload Photo</button>
+                            <button class="avatar-btn remove" type="button" id="removeAvatarBtn" onclick="removeAvatar()" hidden>Remove Photo</button>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" hidden onchange="handleAvatarChange(event)">
+                    </div>
+                </div>
+                <div class="profile-section">
+                    <h3 class="profile-section-title">Personal Information</h3>
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" class="form-control" id="staffFirstName" placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" id="staffLastName" placeholder="Last Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="staffEmail" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <input type="tel" class="form-control" id="staffContact" placeholder="Contact Number">
+                    </div>
+                    <div class="form-group">
+                        <label>Role / Position</label>
+                        <input type="text" class="form-control" id="staffRole" placeholder="e.g. Shift Supervisor">
+                    </div>
+                    <button class="save-btn" onclick="saveStaffProfile()">Save Changes</button>
+                </div>
+                <div class="profile-section">
+                    <h3 class="profile-section-title">Change Password</h3>
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" class="form-control" id="staffCurrentPassword" placeholder="Current Password">
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" class="form-control" id="staffNewPassword" placeholder="New Password (min. 8 characters)">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" class="form-control" id="staffConfirmPassword" placeholder="Confirm New Password">
+                    </div>
+                    <button class="save-btn" onclick="changeStaffPassword()">Change Password</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2005 SushiKami Staff Portal</p>
+    </footer>
+
+    <script>
+        let orders = [];
+        let reservations = [];
+        let staffProfile = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrders();
+            reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+            staffProfile = JSON.parse(localStorage.getItem('staffProfile') || '{}');
+
+            renderDashboard();
+            renderOrders();
+            renderReservations();
+            loadStaffProfile();
+            
+            document.getElementById('staffFirstName')?.addEventListener('input', updateAvatarDisplay);
+            document.getElementById('staffLastName')?.addEventListener('input', updateAvatarDisplay);
+        });
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'orders') {
+                loadOrders();
+                renderOrders();
+                renderDashboard();
+                return;
+            }
+
+            if (event.key === 'reservations') {
+                reservations = JSON.parse(event.newValue || '[]');
+                renderReservations();
+                renderDashboard();
+            }
+        });
+
+        function loadOrders() {
+            try {
+                const storedOrders = localStorage.getItem('orders');
+                if (storedOrders) {
+                    orders = JSON.parse(storedOrders);
+                    console.log('Loaded orders:', orders); // Debug log
+                } else {
+                    orders = [];
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                orders = [];
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+
+        function showSection(sectionId, triggerElem) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            if (triggerElem && triggerElem.classList.contains('nav-btn')) {
+                triggerElem.classList.add('active');
+            } else {
+                const matchingBtn = document.querySelector(`.nav-btn[data-section="${sectionId}"]`);
+                matchingBtn?.classList.add('active');
+            }
+
+            if (window.innerWidth <= 768) {
+                document.getElementById('navMenu').classList.remove('active');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => toast.classList.add('show'));
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function renderDashboard() {
+            const totalEarnings = orders.reduce((sum, order) => sum + (Number(order.total) || 0), 0);
+            const totalOrders = orders.length;
+            const pendingOrders = orders.filter(order => order.status === 'pending').length;
+            const totalReservations = reservations.length;
+
+            document.getElementById('dashboardEarnings').textContent = `₱${totalEarnings.toFixed(2)}`;
+            document.getElementById('dashboardOrders').textContent = totalOrders;
+            document.getElementById('dashboardPending').textContent = pendingOrders;
+            document.getElementById('dashboardReservations').textContent = totalReservations;
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('ordersContainer');
+            if (!container) return;
+
+            if (orders.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><p>No orders available yet.</p></div>`;
+                return;
+            }
+
+            const rows = orders
+                .slice()
+                .sort((a, b) => new Date(b?.date || 0) - new Date(a?.date || 0))
+                .map(order => {
+                    console.log('Processing order:', order); // Debug log
+                    
+                    // Handle different order item formats
+                    let orderItems = [];
+                    if (Array.isArray(order.items)) {
+                        orderItems = order.items;
+                    } else if (order.items && typeof order.items === 'object') {
+                        // Convert object to array if needed
+                        orderItems = Object.values(order.items);
+                    }
+
+                    const itemsList = orderItems
+                        .map(item => {
+                            const itemName = item.name || 'Unknown Item';
+                            const quantity = item.quantity || 1;
+                            const price = item.price || 0;
+                            return `<li>${itemName} x${quantity} - ₱${(price * quantity).toFixed(2)}</li>`;
+                        })
+                        .join('');
+
+                    const orderStatus = order.status || 'pending';
+                    const statusClass = `status-${orderStatus}`;
+                    const orderDate = order?.date ? new Date(order.date) : null;
+                    const formattedDate = orderDate && !Number.isNaN(orderDate.valueOf())
+                        ? orderDate.toLocaleString()
+                        : '—';
+
+                    const paymentMethod = order.paymentMethod || order.payment || 'N/A';
+                    const address = order.address || 'No address provided';
+                    const contact = order.contact || order.contactNumber || '';
+                    const instructions = order.instructions || order.specialInstructions || '';
+
+                    return `
+                        <tr>
+                            <td>
+                                <strong>#${order.id}</strong>
+                                <div style="color: rgba(245,245,220,0.65); font-size: 0.85rem;">${formattedDate}</div>
+                                ${itemsList ? `<ul class="item-list">${itemsList}</ul>` : '<div style="color: rgba(245,245,220,0.5); font-size: 0.85rem;">No items</div>'}
+                            </td>
+                            <td>
+                                <div>₱${Number(order.total).toFixed(2)}</div>
+                                <div style="color: rgba(245,245,220,0.65); font-size: 0.85rem; margin-top: 0.4rem;">
+                                    ${paymentMethod.toUpperCase()}
+                                </div>
+                            </td>
+                            <td>
+                                <div>${address}</div>
+                                <div style="color: rgba(245,245,220,0.65); font-size: 0.85rem; margin-top: 0.35rem;">${contact}</div>
+                                ${instructions ? `<div style="color: rgba(244, 228, 166, 0.75); font-size: 0.85rem; margin-top: 0.4rem;">Note: ${instructions}</div>` : ''}
+                            </td>
+                            <td>
+                                <span class="status-badge ${statusClass}">${orderStatus}</span>
+                                <div style="margin-top: 0.6rem;">
+                                    <select class="inline-select" onchange="updateOrderStatus(${order.id}, this.value)">
+                                        ${['pending', 'preparing', 'ready', 'completed'].map(status => `
+                                            <option value="${status}" ${orderStatus === status ? 'selected' : ''}>${status.charAt(0).toUpperCase() + status.slice(1)}</option>
+                                        `).join('')}
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            container.innerHTML = `
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order Details</th>
+                            <th>Total & Payment</th>
+                            <th>Customer Info</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderReservations() {
+            const container = document.getElementById('reservationsContainer');
+            if (!container) return;
+
+            if (reservations.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">🍣</div><p>No reservations have been made yet.</p></div>`;
+                return;
+            }
+
+            const rows = reservations
+                .slice()
+                .sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
+                .map(reservation => {
+                    const statusClass = `status-${reservation.status}`;
+                    const reservationDate = reservation.date ? new Date(reservation.date + 'T' + (reservation.time || '00:00')).toLocaleString() : '—';
+
+                    return `
+                        <tr>
+                            <td>
+                                <strong>#${reservation.id}</strong>
+                                <div style="color: rgba(245,245,220,0.65); font-size: 0.85rem;">${reservationDate}</div>
+                                ${reservation.notes ? `<div style="margin-top: 0.4rem; color: rgba(244, 228, 166, 0.75); font-size: 0.85rem;">Note: ${reservation.notes}</div>` : ''}
+                            </td>
+                            <td>
+                                <div>${reservation.guests || 'N/A'} guests</div>
+                            </td>
+                            <td>
+                                <span class="status-badge ${statusClass}">${reservation.status}</span>
+                                <div style="margin-top: 0.6rem;">
+                                    <select class="inline-select" onchange="updateReservationStatus(${reservation.id}, this.value)">
+                                        ${['pending', 'confirmed', 'seated', 'completed', 'cancelled'].map(status => `
+                                            <option value="${status}" ${reservation.status === status ? 'selected' : ''}>${status.charAt(0).toUpperCase() + status.slice(1)}</option>
+                                        `).join('')}
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            container.innerHTML = `
+                <table class="reservations-table">
+                    <thead>
+                        <tr>
+                            <th>Reservation Details</th>
+                            <th>Guests</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            order.status = newStatus;
+            localStorage.setItem('orders', JSON.stringify(orders));
+            renderOrders();
+            renderDashboard();
+            showToast(`Order #${orderId} status updated to ${newStatus}.`, 'success');
+        }
+
+        function updateReservationStatus(reservationId, newStatus) {
+            const reservation = reservations.find(r => r.id === reservationId);
+            if (!reservation) return;
+
+            reservation.status = newStatus;
+            localStorage.setItem('reservations', JSON.stringify(reservations));
+            renderReservations();
+            renderDashboard();
+            showToast(`Reservation #${reservationId} set to ${newStatus}.`, 'success');
+        }
+
+        function loadStaffProfile() {
+            document.getElementById('staffFirstName').value = staffProfile.firstName || '';
+            document.getElementById('staffLastName').value = staffProfile.lastName || '';
+            document.getElementById('staffEmail').value = staffProfile.email || '';
+            document.getElementById('staffContact').value = staffProfile.contact || '';
+            document.getElementById('staffRole').value = staffProfile.role || '';
+            
+            if (staffProfile.avatar) {
+                document.getElementById('profileAvatar').src = staffProfile.avatar;
+                document.getElementById('avatarWrapper').classList.add('has-image');
+                document.getElementById('removeAvatarBtn').hidden = false;
+            }
+            
+            updateAvatarDisplay();
+        }
+
+        function saveStaffProfile() {
+            staffProfile = {
+                firstName: document.getElementById('staffFirstName').value.trim(),
+                lastName: document.getElementById('staffLastName').value.trim(),
+                email: document.getElementById('staffEmail').value.trim(),
+                contact: document.getElementById('staffContact').value.trim(),
+                role: document.getElementById('staffRole').value.trim(),
+                avatar: document.getElementById('profileAvatar')?.src || ''
+            };
+
+            if (!staffProfile.firstName || !staffProfile.lastName || !staffProfile.email) {
+                showToast('Please fill in all required fields', 'warning');
+                return;
+            }
+
+            localStorage.setItem('staffProfile', JSON.stringify(staffProfile));
+            showToast('Profile updated successfully!', 'success');
+        }
+
+        function changeStaffPassword() {
+            const current = document.getElementById('staffCurrentPassword')?.value;
+            const newPass = document.getElementById('staffNewPassword')?.value;
+            const confirm = document.getElementById('staffConfirmPassword')?.value;
+
+            if (!current || !newPass || !confirm) {
+                showToast('Please fill in all password fields', 'warning');
+                return;
+            }
+
+            if (newPass.length < 8) {
+                showToast('New password must be at least 8 characters', 'warning');
+                return;
+            }
+
+            if (newPass !== confirm) {
+                showToast('New passwords do not match', 'error');
+                return;
+            }
+
+            // In a real app, this would verify the current password and update it
+            showToast('Password changed successfully!', 'success');
+            
+            // Clear fields
+            document.getElementById('staffCurrentPassword').value = '';
+            document.getElementById('staffNewPassword').value = '';
+            document.getElementById('staffConfirmPassword').value = '';
+        }
+
+        function triggerAvatarUpload() {
+            document.getElementById('avatarInput')?.click();
+        }
+
+        function handleAvatarChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 3 * 1024 * 1024) {
+                showToast('Image must be less than 3MB', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const avatarImg = document.getElementById('profileAvatar');
+                const wrapper = document.getElementById('avatarWrapper');
+                
+                avatarImg.src = e.target.result;
+                wrapper.classList.add('has-image');
+                document.getElementById('removeAvatarBtn').hidden = false;
+                
+                showToast('Avatar uploaded successfully!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeAvatar() {
+            const avatarImg = document.getElementById('profileAvatar');
+            const wrapper = document.getElementById('avatarWrapper');
+            
+            avatarImg.src = '';
+            wrapper.classList.remove('has-image');
+            document.getElementById('removeAvatarBtn').hidden = true;
+            document.getElementById('avatarInput').value = '';
+            
+            showToast('Avatar removed', 'info');
+        }
+
+        function updateAvatarDisplay() {
+            const firstName = document.getElementById('staffFirstName')?.value || '';
+            const lastName = document.getElementById('staffLastName')?.value || '';
+            const placeholder = document.getElementById('avatarPlaceholder');
+            const heading = document.getElementById('avatarNameHeading');
+            
+            if (firstName || lastName) {
+                const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+                placeholder.textContent = initials || '🍣';
+                heading.textContent = `${firstName} ${lastName}`.trim() || 'Your Profile';
+            } else {
+                placeholder.textContent = '🍣';
+                heading.textContent = 'Your Profile';
+            }
+        }
+
+        function logout() {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
